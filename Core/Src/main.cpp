@@ -167,16 +167,16 @@ int main(void)
   /* USER CODE BEGIN WHILE */
 	while (1) {
 
-/*
 		Screen main_screen(1, 1, 1);
 		char a[1];
-		a[0]=main_screen.num;
-		ddram_set_addr(0x00);
-		lcd_send_string(a, 1);
-
-*/
+		a[0] = main_screen.num;
+		ddram_set_addr(0x00, &hi2c1);
+		lcd_send_string(a, 1, &hi2c1);
 
 
+
+
+		/*
 		{
 		char a[] {"Время и дата"};
 		ddram_set_addr(0x00, &hi2c1);
@@ -197,6 +197,7 @@ int main(void)
 		ddram_set_addr(0x54, &hi2c1);
 		lcd_send_string(a, 1, &hi2c1);
 		}
+		*/
 
 
 
