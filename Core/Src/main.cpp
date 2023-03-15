@@ -17,11 +17,12 @@
   */
 /* USER CODE END Header */
 /* Includes ------------------------------------------------------------------*/
-#include "main.h"
+#include "main.hpp"
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-
+#include "Screen.hpp"
+#include "lcd_i2c_lib.hpp"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -31,11 +32,6 @@
 
 /* Private define ------------------------------------------------------------*/
 /* USER CODE BEGIN PD */
-#define EN  0b00000100 // Пин EN
-#define LED 0b00001000 // Пин включения светодиодной подсветки
-#define DDRAM_ADDR_COMMAND 0b10000000 // Команда записи адреса DDRAM памяти в адресный указатель
-
-#define LCD_ADDR (0x27 << 1) // Адрес i2c дисплея
 
 /* USER CODE END PD */
 
@@ -54,8 +50,8 @@ TIM_HandleTypeDef htim6;
 UART_HandleTypeDef huart1;
 
 /* USER CODE BEGIN PV */
-uint8_t addr {};
-uint8_t i2c_state {};
+
+extern uint8_t lcd_i2c_state;
 uint8_t step {};
 uint8_t cur_pos {1};
 uint8_t str[] {"Проверка передачи UART\r\n\0"};
@@ -80,268 +76,6 @@ static void MX_USART1_UART_Init(void);
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
-/*
-class LcdScreen{
-	uint8_t num{};
-	uint8_t cursor_pos{};
-	uint8_t col[]{};
-	uint8_t row[]{};
-};
-*/
-
-
-
-
-
-
-
-
-
-void i2c_addr_scan() {
-	for (uint16_t i = 0; i < 128; i++) {
-		if ((HAL_I2C_IsDeviceReady(&hi2c1, i << 1, 1, HAL_MAX_DELAY))
-				== HAL_OK) {
-			addr = i;
-			i = 129;
-		}
-	}
-}
-
-void lcd_send_bite(uint8_t data, uint8_t rs) {
-	uint8_t up = data & 0xF0;
-	uint8_t lo = (data << 4) & 0xF0;
-
-	uint8_t data_arr[4] {};
-
-	data_arr[0] = up | rs | LED | EN;
-	data_arr[1] = 0;
-	data_arr[2] = lo | rs | LED | EN;
-	data_arr[3] = 0;
-
-	i2c_state = 1;
-	HAL_I2C_Master_Transmit_DMA(&hi2c1, LCD_ADDR, data_arr, 4);
-	while (i2c_state == 1) {
-	}
-}
-
-/* !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! */
-void lcd_send_string(char *str) {
-	while (*str) {
-		if (*str == 'А') {
-			*str = 'A';
-		}
-		else if (*str == 'а') {
-			*str = 'a';
-		}
-		else if (*str == 'Б') {
-			*str = 0b10100000;
-		}
-		else if (*str == 'б') {
-			*str = 0b10110010;
-		}
-		else if (*str == 'В') {
-			*str = 'B';
-		}
-		else if (*str == 'в') {
-			*str = 0b10110011;
-		}
-		else if (*str == 'Г') {
-			*str = 0b10100001;
-		}
-		else if (*str == 'г') {
-			*str = 0b10110100;
-		}
-		else if (*str == 'Д') {
-			*str = 0b11100000;
-		}
-		else if (*str == 'д') {
-			*str = 0b11100011;
-		}
-		else if (*str == 'Е') {
-			*str = 'E';
-		}
-		else if (*str == 'е') {
-			*str = 'e';
-		}
-		else if (*str == 'Ж') {
-			*str = 0b10100011;
-		}
-		else if (*str == 'ж') {
-			*str = 0b10110110;
-		}
-		else if (*str == 'З') {
-			*str = 0b10100100;
-		}
-		else if (*str == 'з') {
-			*str = 0b10110111;
-		}
-		else if (*str == 'И') {
-			*str = 0b10100101;
-		}
-		else if (*str == 'и') {
-			*str = 0b10111000;
-		}
-		else if (*str == 'Й') {
-			*str = 0b10100110;
-		}
-		else if (*str == 'й') {
-			*str = 0b10111001;
-		}
-		else if (*str == 'К') {
-			*str = 'K';
-		}
-		else if (*str == 'к') {
-			*str = 0b10111010;
-		}
-		else if (*str == 'Л') {
-			*str = 0b10100111;
-		}
-		else if (*str == 'л') {
-			*str = 0b10111011;
-		}
-		else if (*str == 'М') {
-			*str = 'M';
-		}
-		else if (*str == 'м') {
-			*str = 0b10111100;
-		}
-		else if (*str == 'Н') {
-			*str = 'H';
-		}
-		else if (*str == 'н') {
-			*str = 0b10111101;
-		}
-		else if (*str == 'О') {
-			*str = 'O';
-		}
-		else if (*str == 'о') {
-			*str = 'o';
-		}
-		else if (*str == 'П') {
-			*str = 0b10101000;
-		}
-		else if (*str == 'п') {
-			*str = 0b10111110;
-		}
-		else if (*str == 'Р') {
-			*str = 'P';
-		}
-		else if (*str == 'р') {
-			*str = 'p';
-		}
-		else if (*str == 'С') {
-			*str = 'C';
-		}
-		else if (*str == 'с') {
-			*str = 'c';
-		}
-		else if (*str == 'Т') {
-			*str = 'T';
-		}
-		else if (*str == 'т') {
-			*str = 0b10111111;
-		}
-		else if (*str == 'У') {
-			*str = 0b10101001;
-		}
-		else if (*str == 'у') {
-			*str = 'y';
-		}
-		else if (*str == 'Ф') {
-			*str = 0b10101010;
-		}
-		else if (*str == 'ф') {
-			*str = 0b11100100;
-		}
-		else if (*str == 'Х') {
-			*str = 'X';
-		}
-		else if (*str == 'х') {
-			*str = 'x';
-		}
-		else if (*str == 'Ц') {
-			*str = 0b11100001;
-		}
-		else if (*str == 'ц') {
-			*str = 0b11100101;
-		}
-		else if (*str == 'Ч') {
-			*str = 0b10101011;
-		}
-		else if (*str == 'ч') {
-			*str = 0b11000000;
-		}
-		else if (*str == 'Ш') {
-			*str = 0b10101100;
-		}
-		else if (*str == 'ш') {
-			*str = 0b11000001;
-		}
-		else if (*str == 'Щ') {
-			*str = 0b11100010;
-		}
-		else if (*str == 'щ') {
-			*str = 0b11100110;
-		}
-		else if (*str == 'ъ') {
-			*str = 0b11000010;
-		}
-		else if (*str == 'ы') {
-			*str = 0b11000011;
-		}
-		else if (*str == 'ь') {
-			*str = 0b11000100;
-		}
-		else if (*str == 'Э') {
-			*str = 0b10101111;
-		}
-		else if (*str == 'э') {
-			*str = 0b11000101;
-		}
-		else if (*str == 'Ю') {
-			*str = 0b10110000;
-		}
-		else if (*str == 'ю') {
-			*str = 0b11000110;
-		}
-		else if (*str == 'Я') {
-			*str = 0b10110001;
-		}
-		else if (*str == 'я') {
-			*str = 0b11000111;
-		}
-
-
-		lcd_send_bite((uint8_t) (*str), 1);
-		str++;
-	}
-}
-
-void lcd_clear() {
-	uint8_t data_arr[4] { 4, 0, 20, 0 };
-
-	i2c_state = 1;
-	HAL_I2C_Master_Transmit_DMA(&hi2c1, LCD_ADDR, data_arr, 4);
-	while (i2c_state == 1) {
-	}
-}
-
-void ddram_set_addr(uint8_t ddram_addr) {
-	uint8_t up = (ddram_addr | 0x80) & 0xF0;
-	uint8_t lo = (ddram_addr << 4) & 0xF0;
-
-	uint8_t data_arr[4]{};
-
-	data_arr[0] = up | EN;
-	data_arr[1] = 0;
-	data_arr[2] = lo | EN;
-	data_arr[3] = 0;
-
-	i2c_state = 1;
-	HAL_I2C_Master_Transmit_DMA(&hi2c1, LCD_ADDR, data_arr, 4);
-	while (i2c_state == 1) {
-	}
-}
 
 uint8_t debounce_count[4] {}; // Размер массива- количество кнопок
 uint8_t button_status[4] {}; // Размер массива- количество кнопок
@@ -388,22 +122,7 @@ void button_interrupt(uint8_t button_num) {
 
 
 
-/* Инициализация дисплея */
-void lcd_initialization() {
-	HAL_Delay(50);
 
-	lcd_send_bite(0b00110000, 0);   // 8ми битный интерфейс
-	HAL_Delay(40);
-
-	lcd_send_bite(0b00000010, 0);   // установка курсора в начале строки
-	HAL_Delay(40);
-
-	lcd_send_bite(0b00001100, 0);   // нормальный режим работы, выкл курсор
-	HAL_Delay(40);
-
-	lcd_send_bite(0b00000001, 0);   // очистка дисплея
-	HAL_Delay(2);
-}
 /* USER CODE END 0 */
 
 /**
@@ -440,7 +159,7 @@ int main(void)
   MX_USART1_UART_Init();
   /* USER CODE BEGIN 2 */
 
-  lcd_initialization();
+  lcd_initialization(&hi2c1);
 
   /* USER CODE END 2 */
 
@@ -448,25 +167,35 @@ int main(void)
   /* USER CODE BEGIN WHILE */
 	while (1) {
 
+/*
+		Screen main_screen(1, 1, 1);
+		char a[1];
+		a[0]=main_screen.num;
+		ddram_set_addr(0x00);
+		lcd_send_string(a, 1);
+
+*/
+
+
 		{
 		char a[] {"Время и дата"};
-		ddram_set_addr(0x00);
-		lcd_send_string(a);
+		ddram_set_addr(0x00, &hi2c1);
+		lcd_send_string(a, 1, &hi2c1);
 		}
 		{
 		char a[] {"Сигналы ТС"};
-		ddram_set_addr(0x40);
-		lcd_send_string(a);
+		ddram_set_addr(0x40, &hi2c1);
+		lcd_send_string(a, 1, &hi2c1);
 		}
 		{
 		char a[] {"Сигналы ТУ"};
-		ddram_set_addr(0x14);
-		lcd_send_string(a);
+		ddram_set_addr(0x14, &hi2c1);
+		lcd_send_string(a, 1, &hi2c1);
 		}
 		{
 		char a[] {"Сигналы ТИ"};
-		ddram_set_addr(0x54);
-		lcd_send_string(a);
+		ddram_set_addr(0x54, &hi2c1);
+		lcd_send_string(a, 1, &hi2c1);
 		}
 
 
@@ -697,7 +426,7 @@ static void MX_GPIO_Init(void)
 
 /* USER CODE BEGIN 4 */
 void HAL_I2C_MasterTxCpltCallback(I2C_HandleTypeDef *hi2c) {
-	i2c_state = 0;
+	lcd_i2c_state = 0;
 }
 
 void HAL_I2C_ErrorCallback(I2C_HandleTypeDef *hi2c) {

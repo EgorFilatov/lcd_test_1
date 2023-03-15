@@ -27,7 +27,12 @@ extern "C" {
 #endif
 
 /* Includes ------------------------------------------------------------------*/
+#ifndef STM32F0XX_HAL_H_
+#define STM32F0XX_HAL_H_
+
 #include "stm32f0xx_hal.h"
+
+#endif
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */

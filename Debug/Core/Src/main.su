@@ -1,20 +1,14 @@
-../Core/Src/main.cpp:100:6:void i2c_addr_scan()	16	static
-../Core/Src/main.cpp:110:6:void lcd_send_bite(uint8_t, uint8_t)	32	static
-../Core/Src/main.cpp:128:6:void lcd_send_string(char*)	16	static
-../Core/Src/main.cpp:320:6:void lcd_clear()	16	static
-../Core/Src/main.cpp:329:6:void ddram_set_addr(uint8_t)	32	static
-../Core/Src/main.cpp:350:6:void button_click(GPIO_TypeDef*, uint8_t, uint8_t)	16	static
-../Core/Src/main.cpp:362:6:void button_interrupt(uint8_t)	16	static
-../Core/Src/main.cpp:392:6:void lcd_initialization()	8	static
-../Core/Src/main.cpp:413:5:int main()	72	static
-../Core/Src/main.cpp:495:6:void SystemClock_Config()	96	static
-../Core/Src/main.cpp:542:13:void MX_I2C1_Init()	8	static
-../Core/Src/main.cpp:590:13:void MX_TIM6_Init()	8	static
-../Core/Src/main.cpp:620:13:void MX_USART1_UART_Init()	8	static
-../Core/Src/main.cpp:653:13:void MX_DMA_Init()	16	static
-../Core/Src/main.cpp:671:13:void MX_GPIO_Init()	48	static
-../Core/Src/main.cpp:699:6:void HAL_I2C_MasterTxCpltCallback(I2C_HandleTypeDef*)	16	static
-../Core/Src/main.cpp:703:6:void HAL_I2C_ErrorCallback(I2C_HandleTypeDef*)	16	static
-../Core/Src/main.cpp:707:6:void HAL_UART_TxCpltCallback(UART_HandleTypeDef*)	16	static
-../Core/Src/main.cpp:713:6:void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef*)	16	static
-../Core/Src/main.cpp:724:6:void Error_Handler()	8	static,ignoring_inline_asm
+../Core/Src/main.cpp:84:6:void button_click(GPIO_TypeDef*, uint8_t, uint8_t)	16	static
+../Core/Src/main.cpp:96:6:void button_interrupt(uint8_t)	16	static
+../Core/Src/main.cpp:132:5:int main()	72	static
+../Core/Src/main.cpp:224:6:void SystemClock_Config()	96	static
+../Core/Src/main.cpp:271:13:void MX_I2C1_Init()	8	static
+../Core/Src/main.cpp:319:13:void MX_TIM6_Init()	8	static
+../Core/Src/main.cpp:349:13:void MX_USART1_UART_Init()	8	static
+../Core/Src/main.cpp:382:13:void MX_DMA_Init()	16	static
+../Core/Src/main.cpp:400:13:void MX_GPIO_Init()	48	static
+../Core/Src/main.cpp:428:6:void HAL_I2C_MasterTxCpltCallback(I2C_HandleTypeDef*)	16	static
+../Core/Src/main.cpp:432:6:void HAL_I2C_ErrorCallback(I2C_HandleTypeDef*)	16	static
+../Core/Src/main.cpp:436:6:void HAL_UART_TxCpltCallback(UART_HandleTypeDef*)	16	static
+../Core/Src/main.cpp:442:6:void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef*)	16	static
+../Core/Src/main.cpp:453:6:void Error_Handler()	8	static,ignoring_inline_asm
