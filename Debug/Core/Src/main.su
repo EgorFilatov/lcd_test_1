@@ -1,14 +1,14 @@
-../Core/Src/main.cpp:84:5:int main()	88	static
-../Core/Src/main.cpp:175:6:void SystemClock_Config()	96	static
-../Core/Src/main.cpp:221:13:void MX_I2C1_Init()	8	static
-../Core/Src/main.cpp:269:13:void MX_TIM6_Init()	8	static
-../Core/Src/main.cpp:299:13:void MX_USART2_UART_Init()	8	static
-../Core/Src/main.cpp:332:13:void MX_DMA_Init()	16	static
-../Core/Src/main.cpp:353:13:void MX_GPIO_Init()	48	static
-../Core/Src/main.cpp:407:6:void HAL_I2C_MasterTxCpltCallback(I2C_HandleTypeDef*)	16	static
-../Core/Src/main.cpp:412:6:void HAL_I2C_ErrorCallback(I2C_HandleTypeDef*)	16	static
-../Core/Src/main.cpp:416:6:void HAL_UART_TxCpltCallback(UART_HandleTypeDef*)	16	static
-../Core/Src/main.cpp:422:6:void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef*)	16	static
-../Core/Src/main.cpp:432:6:void Error_Handler()	8	static,ignoring_inline_asm
-../Core/Src/main.cpp:441:1:void __static_initialization_and_destruction_0(int, int)	16	static
-../Core/Src/main.cpp:441:1:cpp)	8	static
+../Core/Src/main.cpp:80:5:int main()	104	static
+../Core/Src/main.cpp:199:6:void SystemClock_Config()	96	static
+../Core/Src/main.cpp:245:13:void MX_I2C1_Init()	8	static
+../Core/Src/main.cpp:293:13:void MX_TIM6_Init()	8	static
+../Core/Src/main.cpp:323:13:void MX_USART2_UART_Init()	8	static
+../Core/Src/main.cpp:356:13:void MX_DMA_Init()	16	static
+../Core/Src/main.cpp:377:13:void MX_GPIO_Init()	48	static
+../Core/Src/main.cpp:425:6:void HAL_I2C_MasterTxCpltCallback(I2C_HandleTypeDef*)	16	static
+../Core/Src/main.cpp:430:6:void HAL_I2C_ErrorCallback(I2C_HandleTypeDef*)	16	static
+../Core/Src/main.cpp:434:6:void HAL_UART_TxCpltCallback(UART_HandleTypeDef*)	16	static
+../Core/Src/main.cpp:440:6:void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef*)	16	static
+../Core/Src/main.cpp:450:6:void Error_Handler()	8	static,ignoring_inline_asm
+../Core/Src/main.cpp:459:1:void __static_initialization_and_destruction_0(int, int)	16	static
+../Core/Src/main.cpp:459:1:cpp)	8	static

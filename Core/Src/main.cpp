@@ -18,9 +18,6 @@
 /* USER CODE END Header */
 /* Includes ------------------------------------------------------------------*/
 #include <main.hpp>
-
-/* Private includes ----------------------------------------------------------*/
-/* USER CODE BEGIN Includes */
 #include "Screen.hpp"
 #include "Button.hpp"
 #include "lcd_i2c_lib.hpp"
@@ -52,13 +49,12 @@ DMA_HandleTypeDef hdma_usart2_rx;
 DMA_HandleTypeDef hdma_usart2_tx;
 
 /* USER CODE BEGIN PV */
-
 extern uint8_t lcd_i2c_state;
 
 Button button_down(GPIOA, 0);
 
 uint8_t flag = 0;
-
+uint8_t prev_st = 0;
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -111,24 +107,52 @@ int main(void)
   MX_USART2_UART_Init();
   /* USER CODE BEGIN 2 */
   lcd_initialization(&hi2c1, 0x4E);
-
   Screen main_screen;
   main_screen.display();
   /* USER CODE END 2 */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
-	while (1) {
-
-
-
-
-		if (button_down.clicked()) {
+  while (1)
+  {
+	  /*
+		if ((GPIOA->IDR & (1<<0)) == 0x00) {
 			lcd_clear(&hi2c1, 0x4E);
+			char a[] {"Нажато"};
+			ddram_set_addr(0x00, &hi2c1, 0x4E);
+			lcd_send_string(a, 1, &hi2c1, 0x4E);
+		}
+
+		if ((GPIOA->IDR & (1<<0)) == 0x01) {
+			lcd_clear(&hi2c1, 0x4E);
+			char b[] {"Не нажато"};
+			ddram_set_addr(0x00, &hi2c1, 0x4E);
+			lcd_send_string(b, 1, &hi2c1, 0x4E);
+		}
+		*/
+
+		if (button_down.clicked() && prev_st == 0) {
+			prev_st = 1;
+			//lcd_send_bite(0b00000001, 0, &hi2c1, 0x4E);   // очистка дисплея
+			//HAL_Delay(2);
+			lcd_clear(&hi2c1, 0x4E);
+			HAL_Delay(1);
 			char a[] { "Нажато" };
 			ddram_set_addr(0x00, &hi2c1, 0x4E);
 			lcd_send_string(a, 1, &hi2c1, 0x4E);
 		}
+
+		if (button_down.unclicked() && prev_st == 1) {
+			prev_st = 0;
+			//lcd_send_bite(0b00000001, 0, &hi2c1, 0x4E);   // очистка дисплея
+			//HAL_Delay(2);
+			lcd_clear(&hi2c1, 0x4E);
+			HAL_Delay(1);
+			char a[] { "Не нажато" };
+			ddram_set_addr(0x00, &hi2c1, 0x4E);
+			lcd_send_string(a, 1, &hi2c1, 0x4E);
+		}
+
 
 		/*
 		 Screen main_screen(1, 1, 1);
@@ -277,9 +301,9 @@ static void MX_TIM6_Init(void)
 
   /* USER CODE END TIM6_Init 1 */
   htim6.Instance = TIM6;
-  htim6.Init.Prescaler = 47999;
+  htim6.Init.Prescaler = 23999;
   htim6.Init.CounterMode = TIM_COUNTERMODE_UP;
-  htim6.Init.Period = 0;
+  htim6.Init.Period = 1;
   htim6.Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_DISABLE;
   if (HAL_TIM_Base_Init(&htim6) != HAL_OK)
   {
@@ -368,11 +392,11 @@ static void MX_GPIO_Init(void)
   /*Configure GPIO pin Output Level */
   HAL_GPIO_WritePin(GPIOA, GPIO_PIN_8|GPIO_PIN_9|GPIO_PIN_11|GPIO_PIN_12, GPIO_PIN_RESET);
 
-  /*Configure GPIO pin : B1_Pin */
-  GPIO_InitStruct.Pin = B1_Pin;
-  GPIO_InitStruct.Mode = GPIO_MODE_EVT_RISING;
+  /*Configure GPIO pins : PA0 PA10 */
+  GPIO_InitStruct.Pin = GPIO_PIN_0|GPIO_PIN_10;
+  GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
-  HAL_GPIO_Init(B1_GPIO_Port, &GPIO_InitStruct);
+  HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
 
   /*Configure GPIO pins : PB12 PB13 PB14 PB15 */
   GPIO_InitStruct.Pin = GPIO_PIN_12|GPIO_PIN_13|GPIO_PIN_14|GPIO_PIN_15;
@@ -393,12 +417,6 @@ static void MX_GPIO_Init(void)
   GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
-  HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
-
-  /*Configure GPIO pin : PA10 */
-  GPIO_InitStruct.Pin = GPIO_PIN_10;
-  GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
-  GPIO_InitStruct.Pull = GPIO_NOPULL;
   HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
 
 }

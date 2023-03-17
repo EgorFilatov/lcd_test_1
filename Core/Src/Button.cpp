@@ -20,10 +20,10 @@ uint8_t Button::clicked() {
 }
 
 uint8_t Button::unclicked() {
-	if ((this->GPIOx->IDR & (1 << pin)) == 1 && this->debounce_counter == 0) {
+	if ((this->GPIOx->IDR & (1 << pin)) == 0 && this->debounce_counter == 0) {
 		this->debounce_counter = 1;
 		HAL_TIM_Base_Start_IT (&htim6); // Включение таймера 6
-	} else if ((this->GPIOx->IDR & (1 << pin)) == 1 && this->debounce_counter == 10) {
+	} else if ((this->GPIOx->IDR & (1 << pin)) == 0 && this->debounce_counter == 10) {
 		this->debounce_counter = 0;
 		return 1;
 	}
@@ -33,6 +33,9 @@ uint8_t Button::unclicked() {
 void Button::interrupt() {
 	if ((this->debounce_counter) > 0 && (this->debounce_counter) < 10) {
 		++this->debounce_counter;
-		(this->debounce_counter) == 10 ? HAL_TIM_Base_Stop_IT(&htim6) : 0;
+	}
+	else if ((this->debounce_counter) == 10) {
+		HAL_TIM_Base_Stop_IT(&htim6);
+		(this->debounce_counter) = 0;
 	}
 }
