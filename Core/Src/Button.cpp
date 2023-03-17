@@ -5,7 +5,16 @@ extern TIM_HandleTypeDef htim6;
 Button::Button(GPIO_TypeDef *GPIOx, uint8_t pin) {
 	this->GPIOx = GPIOx;
 	this->pin = pin;
+	this->prev_st = 0;
 	this->debounce_counter = 0;
+}
+
+uint8_t Button::get_prev_st() {
+	return this->prev_st;
+}
+
+void Button::set_prev_st(uint8_t prev_st) {
+	this->prev_st = prev_st;
 }
 
 uint8_t Button::clicked() {

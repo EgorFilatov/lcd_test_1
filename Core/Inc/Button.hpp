@@ -7,9 +7,14 @@ class Button {
 private:
 	GPIO_TypeDef *GPIOx;
 	uint8_t pin;
+	uint8_t prev_st;
 	uint8_t debounce_counter;
 public:
 	Button(GPIO_TypeDef *GPIOx, uint8_t pin);
+
+	uint8_t get_prev_st();
+
+	void set_prev_st(uint8_t prev_st);
 
 	uint8_t clicked();
 

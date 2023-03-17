@@ -52,9 +52,6 @@ DMA_HandleTypeDef hdma_usart2_tx;
 extern uint8_t lcd_i2c_state;
 
 Button button_down(GPIOA, 0);
-
-uint8_t flag = 0;
-uint8_t prev_st = 0;
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -107,7 +104,7 @@ int main(void)
   MX_USART2_UART_Init();
   /* USER CODE BEGIN 2 */
   lcd_initialization(&hi2c1, 0x4E);
-  Screen main_screen;
+  Screen main_screen(0x00);
   main_screen.display();
   /* USER CODE END 2 */
 
@@ -115,26 +112,25 @@ int main(void)
   /* USER CODE BEGIN WHILE */
   while (1)
   {
-	  /*
-		if ((GPIOA->IDR & (1<<0)) == 0x00) {
+		if (button_down.clicked() && button_down.get_prev_st() == 0) {
+			button_down.set_prev_st(1);
 			lcd_clear(&hi2c1, 0x4E);
-			char a[] {"Нажато"};
-			ddram_set_addr(0x00, &hi2c1, 0x4E);
-			lcd_send_string(a, 1, &hi2c1, 0x4E);
+			HAL_Delay(2);
+			main_screen.move_cursor_pos();
+			main_screen.display();
 		}
 
-		if ((GPIOA->IDR & (1<<0)) == 0x01) {
-			lcd_clear(&hi2c1, 0x4E);
-			char b[] {"Не нажато"};
-			ddram_set_addr(0x00, &hi2c1, 0x4E);
-			lcd_send_string(b, 1, &hi2c1, 0x4E);
+		if (button_down.unclicked() && button_down.get_prev_st() == 1) {
+			button_down.set_prev_st(0);
+			//lcd_clear(&hi2c1, 0x4E);
+			//HAL_Delay(1);
 		}
-		*/
 
-		if (button_down.clicked() && prev_st == 0) {
-			prev_st = 1;
-			//lcd_send_bite(0b00000001, 0, &hi2c1, 0x4E);   // очистка дисплея
-			//HAL_Delay(2);
+
+
+	  	/*
+		if (button_down.clicked() && button_down.get_prev_st() == 0) {
+			button_down.set_prev_st(1);
 			lcd_clear(&hi2c1, 0x4E);
 			HAL_Delay(1);
 			char a[] { "Нажато" };
@@ -142,16 +138,15 @@ int main(void)
 			lcd_send_string(a, 1, &hi2c1, 0x4E);
 		}
 
-		if (button_down.unclicked() && prev_st == 1) {
-			prev_st = 0;
-			//lcd_send_bite(0b00000001, 0, &hi2c1, 0x4E);   // очистка дисплея
-			//HAL_Delay(2);
+		if (button_down.unclicked() && button_down.get_prev_st() == 1) {
+			button_down.set_prev_st(0);
 			lcd_clear(&hi2c1, 0x4E);
 			HAL_Delay(1);
 			char a[] { "Не нажато" };
 			ddram_set_addr(0x00, &hi2c1, 0x4E);
 			lcd_send_string(a, 1, &hi2c1, 0x4E);
 		}
+		*/
 
 
 		/*
@@ -424,7 +419,6 @@ static void MX_GPIO_Init(void)
 /* USER CODE BEGIN 4 */
 void HAL_I2C_MasterTxCpltCallback(I2C_HandleTypeDef *hi2c) {
 	lcd_i2c_state = 0;
-
 }
 
 void HAL_I2C_ErrorCallback(I2C_HandleTypeDef *hi2c) {
@@ -433,13 +427,10 @@ void HAL_I2C_ErrorCallback(I2C_HandleTypeDef *hi2c) {
 
 void HAL_UART_TxCpltCallback(UART_HandleTypeDef *huart) {
 
-
-
 }
 
 void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
 	button_down.interrupt();
-	++flag;
 }
 /* USER CODE END 4 */
 

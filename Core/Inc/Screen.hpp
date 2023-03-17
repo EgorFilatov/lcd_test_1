@@ -9,8 +9,8 @@ class Screen {
 private:
 	uint8_t addr = 0x4E;
 
-	uint8_t cursor = 0b11001001;
-	uint8_t cursor_pos { };
+	uint8_t cursor;
+	uint8_t cursor_pos;
 
 	char string_1[13] = "Время и дата";
 	uint8_t string_1_pos { };
@@ -28,7 +28,9 @@ private:
 	uint8_t string_5_pos { };
 
 public:
-	Screen();
+	Screen(uint8_t cursor_pos);
+
+	void move_cursor_pos();
 
 	void display();
 };
