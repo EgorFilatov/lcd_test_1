@@ -143,7 +143,7 @@ void i2c_addr_scan(I2C_HandleTypeDef *hi2c) {
 	}
 }
 
-void lcd_send_bite(uint8_t bite, uint8_t rs, I2C_HandleTypeDef *hi2c) {
+void lcd_send_bite(uint8_t bite, uint8_t rs, I2C_HandleTypeDef *hi2c, uint8_t lcd_addr) {
 	uint8_t up = bite & 0xF0;
 	uint8_t lo = (bite << 4) & 0xF0;
 
@@ -155,31 +155,31 @@ void lcd_send_bite(uint8_t bite, uint8_t rs, I2C_HandleTypeDef *hi2c) {
 	data_arr[3] = 0;
 
 	lcd_i2c_state = 1;
-	HAL_I2C_Master_Transmit_DMA(hi2c, LCD_ADDR, data_arr, 4);
+	HAL_I2C_Master_Transmit_DMA(hi2c, lcd_addr, data_arr, 4);
 	while (lcd_i2c_state == 1) {
 	}
 }
-//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-void lcd_send_string(char *str,uint8_t cyrillic, I2C_HandleTypeDef *hi2c) {
+
+void lcd_send_string(char *str,uint8_t cyrillic, I2C_HandleTypeDef *hi2c, uint8_t lcd_addr) {
 	while (*str) {
 		if (cyrillic == 1) {
 			*str = *cyrillic_characters_encoding(&*str);
 		}
-		lcd_send_bite((uint8_t) (*str), 1, hi2c);
+		lcd_send_bite((uint8_t) (*str), 1, hi2c, lcd_addr);
 		str++;
 	}
 }
 
-void lcd_clear(I2C_HandleTypeDef *hi2c) {
+void lcd_clear(I2C_HandleTypeDef *hi2c, uint8_t lcd_addr) {
 	uint8_t data_arr[4] { 4, 0, 20, 0 };
 
 	lcd_i2c_state = 1;
-	HAL_I2C_Master_Transmit_DMA(hi2c, LCD_ADDR, data_arr, 4);
+	HAL_I2C_Master_Transmit_DMA(hi2c, lcd_addr, data_arr, 4);
 	while (lcd_i2c_state == 1) {
 	}
 }
 
-void ddram_set_addr(uint8_t ddram_addr, I2C_HandleTypeDef *hi2c) {
+void ddram_set_addr(uint8_t ddram_addr, I2C_HandleTypeDef *hi2c, uint8_t lcd_addr) {
 	uint8_t up = (ddram_addr | 0x80) & 0xF0;
 	uint8_t lo = (ddram_addr << 4) & 0xF0;
 
@@ -191,23 +191,23 @@ void ddram_set_addr(uint8_t ddram_addr, I2C_HandleTypeDef *hi2c) {
 	data_arr[3] = 0;
 
 	lcd_i2c_state = 1;
-	HAL_I2C_Master_Transmit_DMA(hi2c, LCD_ADDR, data_arr, 4);
+	HAL_I2C_Master_Transmit_DMA(hi2c, lcd_addr, data_arr, 4);
 	while (lcd_i2c_state == 1) {
 	}
 }
 
-void lcd_initialization(I2C_HandleTypeDef *hi2c) {
+void lcd_initialization(I2C_HandleTypeDef *hi2c, uint8_t lcd_addr) {
 	HAL_Delay(50);
 
-	lcd_send_bite(0b00110000, 0, hi2c);   // 8ми битный интерфейс
+	lcd_send_bite(0b00110000, 0, hi2c, lcd_addr);   // 8ми битный интерфейс
 	HAL_Delay(40);
 
-	lcd_send_bite(0b00000010, 0, hi2c);   // установка курсора в начале строки
+	lcd_send_bite(0b00000010, 0, hi2c, lcd_addr);   // установка курсора в начале строки
 	HAL_Delay(40);
 
-	lcd_send_bite(0b00001100, 0, hi2c);   // нормальный режим работы, выкл курсор
+	lcd_send_bite(0b00001100, 0, hi2c, lcd_addr);   // нормальный режим работы, выкл курсор
 	HAL_Delay(40);
 
-	lcd_send_bite(0b00000001, 0, hi2c);   // очистка дисплея
+	lcd_send_bite(0b00000001, 0, hi2c, lcd_addr);   // очистка дисплея
 	HAL_Delay(2);
 }

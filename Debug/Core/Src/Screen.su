@@ -1,1 +1,2 @@
-../Core/Src/Screen.cpp:3:1:Screen::Screen(uint8_t, uint8_t, uint8_t)	24	static
+../Core/Src/Screen.cpp:3:1:Screen::Screen()	16	static
+../Core/Src/Screen.cpp:6:6:void Screen::display()	16	static

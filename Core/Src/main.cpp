@@ -17,11 +17,12 @@
   */
 /* USER CODE END Header */
 /* Includes ------------------------------------------------------------------*/
-#include "main.hpp"
+#include <main.hpp>
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 #include "Screen.hpp"
+#include "Button.hpp"
 #include "lcd_i2c_lib.hpp"
 /* USER CODE END Includes */
 
@@ -32,7 +33,6 @@
 
 /* Private define ------------------------------------------------------------*/
 /* USER CODE BEGIN PD */
-
 /* USER CODE END PD */
 
 /* Private macro -------------------------------------------------------------*/
@@ -47,19 +47,17 @@ DMA_HandleTypeDef hdma_i2c1_tx;
 
 TIM_HandleTypeDef htim6;
 
-UART_HandleTypeDef huart1;
+UART_HandleTypeDef huart2;
+DMA_HandleTypeDef hdma_usart2_rx;
+DMA_HandleTypeDef hdma_usart2_tx;
 
 /* USER CODE BEGIN PV */
 
 extern uint8_t lcd_i2c_state;
-uint8_t step {};
-uint8_t cur_pos {1};
-uint8_t str[] {"Проверка передачи UART\r\n\0"};
 
+Button button_down(GPIOA, 0);
 
 uint8_t flag = 0;
-
-uint8_t chislo[6] = {1,2,3,4,5,6};
 
 /* USER CODE END PV */
 
@@ -69,59 +67,13 @@ static void MX_GPIO_Init(void);
 static void MX_DMA_Init(void);
 static void MX_I2C1_Init(void);
 static void MX_TIM6_Init(void);
-static void MX_USART1_UART_Init(void);
+static void MX_USART2_UART_Init(void);
 /* USER CODE BEGIN PFP */
 
 /* USER CODE END PFP */
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
-
-uint8_t debounce_count[4] {}; // Размер массива- количество кнопок
-uint8_t button_status[4] {}; // Размер массива- количество кнопок
-uint8_t timer_status {};
-
-void button_click(GPIO_TypeDef *GPIOx, uint8_t pin, uint8_t button_num) {
-	if ((GPIOx->IDR & (1 << pin)) && button_status[button_num] == 0) {
-		button_status[button_num] = 1;
-		++timer_status;
-		HAL_TIM_Base_Start_IT(&htim6); // Включение таймера 6
-	}
-
-	if ((GPIOA->IDR & (1 << pin)) == 0 && button_status[button_num] == 2) {
-		button_status[button_num] = 0;
-	}
-}
-
-void button_interrupt(uint8_t button_num) {
-	if (debounce_count[button_num] < 5) {
-		++debounce_count[button_num];
-	}
-
-	if (debounce_count[button_num] == 5 && (GPIOA->IDR & (1 << button_num))) {
-
-		if (timer_status == 1) {
-			timer_status = 0;
-			HAL_TIM_Base_Stop_IT(&htim6);
-		} else {
-			--timer_status;
-		}
-		if (button_num == 0) {
-			--cur_pos;
-		}
-		if (button_num == 1) {
-			++cur_pos;
-		}
-
-		debounce_count[button_num] = 0;
-		button_status[button_num] = 2;
-	} else {
-		button_status[button_num] = 0;
-	}
-}
-
-
-
 
 /* USER CODE END 0 */
 
@@ -156,61 +108,59 @@ int main(void)
   MX_DMA_Init();
   MX_I2C1_Init();
   MX_TIM6_Init();
-  MX_USART1_UART_Init();
+  MX_USART2_UART_Init();
   /* USER CODE BEGIN 2 */
+  lcd_initialization(&hi2c1, 0x4E);
 
-  lcd_initialization(&hi2c1);
-
+  Screen main_screen;
+  main_screen.display();
   /* USER CODE END 2 */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
 	while (1) {
 
-		Screen main_screen(1, 1, 1);
-		char a[1];
-		a[0] = main_screen.num;
-		ddram_set_addr(0x00, &hi2c1);
-		lcd_send_string(a, 1, &hi2c1);
 
 
 
+		if (button_down.clicked()) {
+			lcd_clear(&hi2c1, 0x4E);
+			char a[] { "Нажато" };
+			ddram_set_addr(0x00, &hi2c1, 0x4E);
+			lcd_send_string(a, 1, &hi2c1, 0x4E);
+		}
 
 		/*
-		{
-		char a[] {"Время и дата"};
-		ddram_set_addr(0x00, &hi2c1);
-		lcd_send_string(a, 1, &hi2c1);
-		}
-		{
-		char a[] {"Сигналы ТС"};
-		ddram_set_addr(0x40, &hi2c1);
-		lcd_send_string(a, 1, &hi2c1);
-		}
-		{
-		char a[] {"Сигналы ТУ"};
-		ddram_set_addr(0x14, &hi2c1);
-		lcd_send_string(a, 1, &hi2c1);
-		}
-		{
-		char a[] {"Сигналы ТИ"};
-		ddram_set_addr(0x54, &hi2c1);
-		lcd_send_string(a, 1, &hi2c1);
-		}
-		*/
+		 Screen main_screen(1, 1, 1);
+		 char a[1];
+		 a[0] = main_screen.num;
+		 ddram_set_addr(0x00, &hi2c1);
+		 lcd_send_string(a, 1, &hi2c1);
 
+		 */
 
-
-
-
-
-
-
-
-
-
-
-
+		/*
+		 {
+		 char a[] {"Время и дата"};
+		 ddram_set_addr(0x00, &hi2c1);
+		 lcd_send_string(a, 1, &hi2c1);
+		 }
+		 {
+		 char a[] {"Сигналы ТС"};
+		 ddram_set_addr(0x40, &hi2c1);
+		 lcd_send_string(a, 1, &hi2c1);
+		 }
+		 {
+		 char a[] {"Сигналы ТУ"};
+		 ddram_set_addr(0x14, &hi2c1);
+		 lcd_send_string(a, 1, &hi2c1);
+		 }
+		 {
+		 char a[] {"Сигналы ТИ"};
+		 ddram_set_addr(0x54, &hi2c1);
+		 lcd_send_string(a, 1, &hi2c1);
+		 }
+		 */
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
@@ -255,8 +205,7 @@ void SystemClock_Config(void)
   {
     Error_Handler();
   }
-  PeriphClkInit.PeriphClockSelection = RCC_PERIPHCLK_USART1|RCC_PERIPHCLK_I2C1;
-  PeriphClkInit.Usart1ClockSelection = RCC_USART1CLKSOURCE_PCLK1;
+  PeriphClkInit.PeriphClockSelection = RCC_PERIPHCLK_I2C1;
   PeriphClkInit.I2c1ClockSelection = RCC_I2C1CLKSOURCE_HSI;
   if (HAL_RCCEx_PeriphCLKConfig(&PeriphClkInit) != HAL_OK)
   {
@@ -328,9 +277,9 @@ static void MX_TIM6_Init(void)
 
   /* USER CODE END TIM6_Init 1 */
   htim6.Instance = TIM6;
-  htim6.Init.Prescaler = 5000;
+  htim6.Init.Prescaler = 47999;
   htim6.Init.CounterMode = TIM_COUNTERMODE_UP;
-  htim6.Init.Period = 2;
+  htim6.Init.Period = 0;
   htim6.Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_DISABLE;
   if (HAL_TIM_Base_Init(&htim6) != HAL_OK)
   {
@@ -343,37 +292,37 @@ static void MX_TIM6_Init(void)
 }
 
 /**
-  * @brief USART1 Initialization Function
+  * @brief USART2 Initialization Function
   * @param None
   * @retval None
   */
-static void MX_USART1_UART_Init(void)
+static void MX_USART2_UART_Init(void)
 {
 
-  /* USER CODE BEGIN USART1_Init 0 */
+  /* USER CODE BEGIN USART2_Init 0 */
 
-  /* USER CODE END USART1_Init 0 */
+  /* USER CODE END USART2_Init 0 */
 
-  /* USER CODE BEGIN USART1_Init 1 */
+  /* USER CODE BEGIN USART2_Init 1 */
 
-  /* USER CODE END USART1_Init 1 */
-  huart1.Instance = USART1;
-  huart1.Init.BaudRate = 115200;
-  huart1.Init.WordLength = UART_WORDLENGTH_8B;
-  huart1.Init.StopBits = UART_STOPBITS_1;
-  huart1.Init.Parity = UART_PARITY_NONE;
-  huart1.Init.Mode = UART_MODE_TX_RX;
-  huart1.Init.HwFlowCtl = UART_HWCONTROL_NONE;
-  huart1.Init.OverSampling = UART_OVERSAMPLING_16;
-  huart1.Init.OneBitSampling = UART_ONE_BIT_SAMPLE_DISABLE;
-  huart1.AdvancedInit.AdvFeatureInit = UART_ADVFEATURE_NO_INIT;
-  if (HAL_UART_Init(&huart1) != HAL_OK)
+  /* USER CODE END USART2_Init 1 */
+  huart2.Instance = USART2;
+  huart2.Init.BaudRate = 38400;
+  huart2.Init.WordLength = UART_WORDLENGTH_8B;
+  huart2.Init.StopBits = UART_STOPBITS_1;
+  huart2.Init.Parity = UART_PARITY_NONE;
+  huart2.Init.Mode = UART_MODE_TX_RX;
+  huart2.Init.HwFlowCtl = UART_HWCONTROL_NONE;
+  huart2.Init.OverSampling = UART_OVERSAMPLING_16;
+  huart2.Init.OneBitSampling = UART_ONE_BIT_SAMPLE_DISABLE;
+  huart2.AdvancedInit.AdvFeatureInit = UART_ADVFEATURE_NO_INIT;
+  if (HAL_UART_Init(&huart2) != HAL_OK)
   {
     Error_Handler();
   }
-  /* USER CODE BEGIN USART1_Init 2 */
+  /* USER CODE BEGIN USART2_Init 2 */
 
-  /* USER CODE END USART1_Init 2 */
+  /* USER CODE END USART2_Init 2 */
 
 }
 
@@ -390,6 +339,9 @@ static void MX_DMA_Init(void)
   /* DMA1_Channel2_3_IRQn interrupt configuration */
   HAL_NVIC_SetPriority(DMA1_Channel2_3_IRQn, 0, 0);
   HAL_NVIC_EnableIRQ(DMA1_Channel2_3_IRQn);
+  /* DMA1_Channel4_5_IRQn interrupt configuration */
+  HAL_NVIC_SetPriority(DMA1_Channel4_5_IRQn, 0, 0);
+  HAL_NVIC_EnableIRQ(DMA1_Channel4_5_IRQn);
 
 }
 
@@ -404,11 +356,17 @@ static void MX_GPIO_Init(void)
 
   /* GPIO Ports Clock Enable */
   __HAL_RCC_GPIOA_CLK_ENABLE();
-  __HAL_RCC_GPIOC_CLK_ENABLE();
   __HAL_RCC_GPIOB_CLK_ENABLE();
+  __HAL_RCC_GPIOC_CLK_ENABLE();
 
   /*Configure GPIO pin Output Level */
-  HAL_GPIO_WritePin(GPIOC, LD4_Pin|LD3_Pin, GPIO_PIN_RESET);
+  HAL_GPIO_WritePin(GPIOB, GPIO_PIN_12|GPIO_PIN_13|GPIO_PIN_14|GPIO_PIN_15, GPIO_PIN_RESET);
+
+  /*Configure GPIO pin Output Level */
+  HAL_GPIO_WritePin(GPIOC, GPIO_PIN_6|GPIO_PIN_7|GPIO_PIN_8|GPIO_PIN_9, GPIO_PIN_RESET);
+
+  /*Configure GPIO pin Output Level */
+  HAL_GPIO_WritePin(GPIOA, GPIO_PIN_8|GPIO_PIN_9|GPIO_PIN_11|GPIO_PIN_12, GPIO_PIN_RESET);
 
   /*Configure GPIO pin : B1_Pin */
   GPIO_InitStruct.Pin = B1_Pin;
@@ -416,18 +374,39 @@ static void MX_GPIO_Init(void)
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   HAL_GPIO_Init(B1_GPIO_Port, &GPIO_InitStruct);
 
-  /*Configure GPIO pins : LD4_Pin LD3_Pin */
-  GPIO_InitStruct.Pin = LD4_Pin|LD3_Pin;
+  /*Configure GPIO pins : PB12 PB13 PB14 PB15 */
+  GPIO_InitStruct.Pin = GPIO_PIN_12|GPIO_PIN_13|GPIO_PIN_14|GPIO_PIN_15;
+  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
+  GPIO_InitStruct.Pull = GPIO_NOPULL;
+  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+  HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
+
+  /*Configure GPIO pins : PC6 PC7 PC8 PC9 */
+  GPIO_InitStruct.Pin = GPIO_PIN_6|GPIO_PIN_7|GPIO_PIN_8|GPIO_PIN_9;
   GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
   HAL_GPIO_Init(GPIOC, &GPIO_InitStruct);
+
+  /*Configure GPIO pins : PA8 PA9 PA11 PA12 */
+  GPIO_InitStruct.Pin = GPIO_PIN_8|GPIO_PIN_9|GPIO_PIN_11|GPIO_PIN_12;
+  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
+  GPIO_InitStruct.Pull = GPIO_NOPULL;
+  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+  HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
+
+  /*Configure GPIO pin : PA10 */
+  GPIO_InitStruct.Pin = GPIO_PIN_10;
+  GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
+  GPIO_InitStruct.Pull = GPIO_NOPULL;
+  HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
 
 }
 
 /* USER CODE BEGIN 4 */
 void HAL_I2C_MasterTxCpltCallback(I2C_HandleTypeDef *hi2c) {
 	lcd_i2c_state = 0;
+
 }
 
 void HAL_I2C_ErrorCallback(I2C_HandleTypeDef *hi2c) {
@@ -436,15 +415,14 @@ void HAL_I2C_ErrorCallback(I2C_HandleTypeDef *hi2c) {
 
 void HAL_UART_TxCpltCallback(UART_HandleTypeDef *huart) {
 
-	++flag;
+
 
 }
 
 void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
-	button_interrupt(0);
-	button_interrupt(1);
+	button_down.interrupt();
+	++flag;
 }
-
 /* USER CODE END 4 */
 
 /**

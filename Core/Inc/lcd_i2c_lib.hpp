@@ -25,7 +25,7 @@ void i2c_addr_scan(I2C_HandleTypeDef *hi2c);
  * bite- отправляемый байт
  * rs = 0- отправка настроек, rs = 1- отправка символа
  */
-void lcd_send_bite(uint8_t bite, uint8_t rs, I2C_HandleTypeDef *hi2c); // Фунуция поиска адреса i2c исплея
+void lcd_send_bite(uint8_t bite, uint8_t rs, I2C_HandleTypeDef *hi2c, uint8_t lcd_addr); // Фунуция поиска адреса i2c исплея
 
 
 /* Фунуция отправки строки
@@ -33,21 +33,21 @@ void lcd_send_bite(uint8_t bite, uint8_t rs, I2C_HandleTypeDef *hi2c); // Фунуци
  * str- отправляемая строка
  * cyrillic = 0- нет кириллических символов, cyrillic = 1- есть кириллические символы
  */
-void lcd_send_string(char *str,uint8_t cyrillic, I2C_HandleTypeDef *hi2c);
+void lcd_send_string(char *str,uint8_t cyrillic, I2C_HandleTypeDef *hi2c, uint8_t lcd_addr);
 
 
 /* Фунуция очистки дисплея */
-void lcd_clear(I2C_HandleTypeDef *hi2c);
+void lcd_clear(I2C_HandleTypeDef *hi2c, uint8_t lcd_addr);
 
 
 /* Фунуция записи адреса DDRAM памяти в адресный указатель
  ******************************************************************************
  * ddram_addr- адрес памяти
  */
-void ddram_set_addr(uint8_t ddram_addr, I2C_HandleTypeDef *hi2c);
+void ddram_set_addr(uint8_t ddram_addr, I2C_HandleTypeDef *hi2c, uint8_t lcd_addr);
 
 
 /* Фунуция инициализации дисплея */
-void lcd_initialization(I2C_HandleTypeDef *hi2c);
+void lcd_initialization(I2C_HandleTypeDef *hi2c, uint8_t lcd_addr);
 
 #endif
