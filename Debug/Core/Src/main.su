@@ -1,4 +1,4 @@
-../Core/Src/main.cpp:77:5:int main()	72	static
+../Core/Src/main.cpp:78:5:int main()	8	static
 ../Core/Src/main.cpp:194:6:void SystemClock_Config()	96	static
 ../Core/Src/main.cpp:240:13:void MX_I2C1_Init()	8	static
 ../Core/Src/main.cpp:288:13:void MX_TIM6_Init()	8	static

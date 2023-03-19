@@ -52,6 +52,7 @@ DMA_HandleTypeDef hdma_usart2_tx;
 extern uint8_t lcd_i2c_state;
 
 Button button_down(GPIOA, 0);
+Screen main_screen(0x00);
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -104,7 +105,6 @@ int main(void)
   MX_USART2_UART_Init();
   /* USER CODE BEGIN 2 */
   lcd_initialization(&hi2c1, 0x4E);
-  Screen main_screen(0x00);
   main_screen.display();
   /* USER CODE END 2 */
 
@@ -114,8 +114,8 @@ int main(void)
   {
 		if (button_down.clicked() && button_down.get_prev_st() == 0) {
 			button_down.set_prev_st(1);
-			lcd_clear(&hi2c1, 0x4E);
-			HAL_Delay(2);
+			//lcd_clear(&hi2c1, 0x4E);
+			//HAL_Delay(2);
 			main_screen.move_cursor_pos();
 			main_screen.display();
 		}
