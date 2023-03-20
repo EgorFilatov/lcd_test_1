@@ -1,3 +1,3 @@
-../Core/Src/Screen.cpp:3:1:Screen::Screen(uint8_t)	16	static
+../Core/Src/Screen.cpp:3:1:Screen::Screen(I2C_HandleTypeDef*, uint8_t)	24	static
 ../Core/Src/Screen.cpp:8:6:void Screen::move_cursor_pos()	16	static
-../Core/Src/Screen.cpp:31:6:void Screen::display()	16	static
+../Core/Src/Screen.cpp:48:6:void Screen::display()	16	static

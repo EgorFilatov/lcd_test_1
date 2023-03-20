@@ -49,10 +49,12 @@ DMA_HandleTypeDef hdma_usart2_rx;
 DMA_HandleTypeDef hdma_usart2_tx;
 
 /* USER CODE BEGIN PV */
+uint8_t flag;
+
 extern uint8_t lcd_i2c_state;
 
 Button button_down(GPIOA, 0);
-Screen main_screen(0x00);
+Screen main_screen(&hi2c1, 0x4E);
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -104,7 +106,8 @@ int main(void)
   MX_TIM6_Init();
   MX_USART2_UART_Init();
   /* USER CODE BEGIN 2 */
-  lcd_initialization(&hi2c1, 0x4E);
+  I2CSettings i2cSettings { &hi2c1, 0x4E };
+  lcd_initialization(i2cSettings);
   main_screen.display();
   /* USER CODE END 2 */
 
@@ -112,16 +115,15 @@ int main(void)
   /* USER CODE BEGIN WHILE */
   while (1)
   {
-		if (button_down.clicked() && button_down.get_prev_st() == 0) {
+		if (button_down.clicked() == 1 && button_down.get_prev_st() == 0) {
 			button_down.set_prev_st(1);
-			//lcd_clear(&hi2c1, 0x4E);
-			//HAL_Delay(2);
 			main_screen.move_cursor_pos();
-			main_screen.display();
 		}
 
-		if (button_down.unclicked() && button_down.get_prev_st() == 1) {
-			button_down.set_prev_st(0);
+		if (button_down.get_prev_st() == 1) {
+			if (button_down.unclicked() && button_down.get_prev_st() == 1) {
+				button_down.set_prev_st(0);
+			}
 			//lcd_clear(&hi2c1, 0x4E);
 			//HAL_Delay(1);
 		}
@@ -431,6 +433,7 @@ void HAL_UART_TxCpltCallback(UART_HandleTypeDef *huart) {
 
 void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
 	button_down.interrupt();
+	++flag;
 }
 /* USER CODE END 4 */
 

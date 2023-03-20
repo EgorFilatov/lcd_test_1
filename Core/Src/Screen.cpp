@@ -1,48 +1,65 @@
 #include "Screen.hpp"
 
-Screen::Screen(uint8_t cursor_pos) {
-	this->cursor = 0b11001001;
-	this->cursor_pos = cursor_pos;
+Screen::Screen(I2C_HandleTypeDef *hi2c, uint8_t i2cAddr) {
+	this->i2cSettings.hi2c = hi2c;
+	this->i2cSettings.i2cAddr = i2cAddr;
 }
 
 void Screen::move_cursor_pos() {
-	if (this->cursor_pos == 0x00) {
-		ddram_set_addr(0x40, &hi2c1, this->addr);
-		lcd_send_bite(this->cursor, 1, &hi2c1, this->addr);
-	}
-	if (this->cursor_pos == 0x40) {
-		ddram_set_addr(0x15, &hi2c1, this->addr);
-		lcd_send_bite(this->cursor, 1, &hi2c1, this->addr);
-	}
-	if (this->cursor_pos == 0x14) {
-		ddram_set_addr(0x40, &hi2c1, this->addr);
-		lcd_send_bite(this->cursor, 1, &hi2c1, this->addr);
-	}
-	if (this->cursor_pos == 0x14) {
-		ddram_set_addr(0x54, &hi2c1, this->addr);
-		lcd_send_bite(this->cursor, 1, &hi2c1, this->addr);
-	}
-	if (this->cursor_pos == 0x54) {
-		ddram_set_addr(0x00, &hi2c1, this->addr);
-		lcd_send_bite(this->cursor, 1, &hi2c1, this->addr);
+	if (this->cursorPos == 0x00) {
+		ddram_set_addr(this->cursorPos, this->i2cSettings);
+		lcd_send_bite(0b10000000, 1, this->i2cSettings);
+		this->cursorPos = 0x40;
+		ddram_set_addr(this->cursorPos, this->i2cSettings);
+		lcd_send_bite(this->cursor, 1, this->i2cSettings);
+	} else if (this->cursorPos == 0x40) {
+		ddram_set_addr(this->cursorPos, this->i2cSettings);
+		lcd_send_bite(0b10000000, 1, this->i2cSettings);
+		this->cursorPos = 0x14;
+		ddram_set_addr(this->cursorPos, this->i2cSettings);
+		lcd_send_bite(this->cursor, 1, this->i2cSettings);
+	} else if (this->cursorPos == 0x14) {
+		ddram_set_addr(this->cursorPos, this->i2cSettings);
+		lcd_send_bite(0b10000000, 1, this->i2cSettings);
+		this->cursorPos = 0x54;
+		ddram_set_addr(this->cursorPos, this->i2cSettings);
+		lcd_send_bite(this->cursor, 1, this->i2cSettings);
+	} else if (this->cursorPos == 0x54) {
+		lcd_clear(this->i2cSettings);
+		HAL_Delay(5);
+
+		ddram_set_addr(this->cursorPos, this->i2cSettings);
+		lcd_send_bite(this->cursor, 1, this->i2cSettings);
+
+		ddram_set_addr(this->rowPos1 + 1, this->i2cSettings);
+		lcd_send_string(this->line2, 1, this->i2cSettings);
+
+		ddram_set_addr(this->rowPos2 + 1, this->i2cSettings);
+		lcd_send_string(this->line3, 1, this->i2cSettings);
+
+		ddram_set_addr(this->rowPos3 + 1, this->i2cSettings);
+		lcd_send_string(this->line4, 1, this->i2cSettings);
+
+		ddram_set_addr(this->rowPos4 + 1, this->i2cSettings);
+		lcd_send_string(this->line5, 1, this->i2cSettings);
 	}
 }
 
 void Screen::display() {
-	ddram_set_addr(this->cursor_pos, &hi2c1, this->addr);
-	lcd_send_bite(this->cursor, 1, &hi2c1, this->addr);
+	ddram_set_addr(this->cursorPos, this->i2cSettings);
+	lcd_send_bite(this->cursor, 1, this->i2cSettings);
 
-	ddram_set_addr(0x01, &hi2c1, this->addr);
-	lcd_send_string(this->string_1, 1, &hi2c1, this->addr);
+	ddram_set_addr(this->rowPos1 + 1, this->i2cSettings);
+	lcd_send_string(this->line1, 1, this->i2cSettings);
 
-	ddram_set_addr(0x41, &hi2c1, this->addr);
-	lcd_send_string(this->string_2, 1, &hi2c1, this->addr);
+	ddram_set_addr(this->rowPos2 + 1, this->i2cSettings);
+	lcd_send_string(this->line2, 1, this->i2cSettings);
 
-	ddram_set_addr(0x15, &hi2c1, this->addr);
-	lcd_send_string(this->string_3, 1, &hi2c1, this->addr);
+	ddram_set_addr(this->rowPos3 + 1, this->i2cSettings);
+	lcd_send_string(this->line3, 1, this->i2cSettings);
 
-	ddram_set_addr(0x55, &hi2c1, this->addr);
-	lcd_send_string(this->string_4, 1, &hi2c1, this->addr);
+	ddram_set_addr(this->rowPos4 + 1, this->i2cSettings);
+	lcd_send_string(this->line4, 1, this->i2cSettings);
 }
 
 

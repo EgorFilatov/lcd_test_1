@@ -3,32 +3,31 @@
 
 #ifndef SRC_SCREEN_HPP_
 #define SRC_SCREEN_HPP_
+
 extern I2C_HandleTypeDef hi2c1;
 
 class Screen {
 private:
-	uint8_t addr = 0x4E;
+	I2CSettings i2cSettings;
 
-	uint8_t cursor;
-	uint8_t cursor_pos;
+	uint8_t i2cAddr;
 
-	char string_1[13] = "Время и дата";
-	uint8_t string_1_pos { };
+	uint8_t cursor { 0xC9 };
+	uint8_t cursorPos { 0x00 };
 
-	char string_2[11] = "Сигналы ТС";
-	uint8_t string_2_pos { };
+	uint8_t rowPos1 { 0x00 };
+	uint8_t rowPos2 { 0x40 };
+	uint8_t rowPos3 { 0x14 };
+	uint8_t rowPos4 { 0x54 };
 
-	char string_3[11] = "Сигналы ТУ";
-	uint8_t string_3_pos { };
-
-	char string_4[11] = "Сигналы ТИ";
-	uint8_t string_4_pos { };
-
-	char string_5[10] = "Настройки";
-	uint8_t string_5_pos { };
+	char line1[13] = "Время и дата";
+	char line2[11] = "Сигналы ТС";
+	char line3[11] = "Сигналы ТУ";
+	char line4[11] = "Сигналы ТИ";
+	char line5[10] = "Настройки";
 
 public:
-	Screen(uint8_t cursor_pos);
+	Screen(I2C_HandleTypeDef *hi2c, uint8_t i2cAddr);
 
 	void move_cursor_pos();
 

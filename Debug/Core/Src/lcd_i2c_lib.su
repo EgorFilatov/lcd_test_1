@@ -1,7 +1,6 @@
-../Core/Src/lcd_i2c_lib.cpp:6:7:char* cyrillic_characters_encoding(char*)	16	static
-../Core/Src/lcd_i2c_lib.cpp:136:6:void i2c_addr_scan(I2C_HandleTypeDef*)	32	static
-../Core/Src/lcd_i2c_lib.cpp:146:6:void lcd_send_bite(uint8_t, uint8_t, I2C_HandleTypeDef*, uint8_t)	32	static
-../Core/Src/lcd_i2c_lib.cpp:163:6:void lcd_send_string(char*, uint8_t, I2C_HandleTypeDef*, uint8_t)	24	static
-../Core/Src/lcd_i2c_lib.cpp:173:6:void lcd_clear(I2C_HandleTypeDef*, uint8_t)	24	static
-../Core/Src/lcd_i2c_lib.cpp:182:6:void ddram_set_addr(uint8_t, I2C_HandleTypeDef*, uint8_t)	32	static
-../Core/Src/lcd_i2c_lib.cpp:199:6:void lcd_initialization(I2C_HandleTypeDef*, uint8_t)	16	static
+../Core/Src/lcd_i2c_lib.cpp:12:7:char* cyrillic_characters_encoding(char*)	16	static
+../Core/Src/lcd_i2c_lib.cpp:153:6:void lcd_send_bite(uint8_t, uint8_t, I2CSettings)	40	static
+../Core/Src/lcd_i2c_lib.cpp:170:6:void lcd_send_string(char*, uint8_t, I2CSettings)	24	static
+../Core/Src/lcd_i2c_lib.cpp:180:6:void lcd_clear(I2CSettings)	32	static
+../Core/Src/lcd_i2c_lib.cpp:189:6:void ddram_set_addr(uint8_t, I2CSettings)	40	static
+../Core/Src/lcd_i2c_lib.cpp:206:6:void lcd_initialization(I2CSettings)	16	static
