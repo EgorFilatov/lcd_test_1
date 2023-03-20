@@ -109,6 +109,8 @@ int main(void)
   I2CSettings i2cSettings { &hi2c1, 0x4E };
   lcd_initialization(i2cSettings);
   main_screen.display();
+  main_screen.display();
+
   /* USER CODE END 2 */
 
   /* Infinite loop */

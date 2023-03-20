@@ -26,6 +26,13 @@ private:
 	char line4[11] = "Сигналы ТИ";
 	char line5[10] = "Настройки";
 
+/*
+	char line1[14] = "Date and time";
+	char line2[11] = "Sigtals TS";
+	char line3[11] = "Signals TY";
+	char line4[11] = "Signals TI";
+	char line5[9] = "Settings";
+*/
 public:
 	Screen(I2C_HandleTypeDef *hi2c, uint8_t i2cAddr);
 

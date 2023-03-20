@@ -167,11 +167,9 @@ void lcd_send_bite(uint8_t bite, uint8_t rs, I2CSettings settings) {
 	}
 }
 
-void lcd_send_string(char *str,uint8_t cyrillic, I2CSettings settings) {
+void lcd_send_string(char *str, I2CSettings settings) {
 	while (*str) {
-		if (cyrillic == 1) {
-			*str = *cyrillic_characters_encoding(&*str);
-		}
+		*str = *cyrillic_characters_encoding(str);
 		lcd_send_bite((uint8_t) (*str), 1, settings);
 		str++;
 	}

@@ -38,7 +38,7 @@ void lcd_send_bite(uint8_t bite, uint8_t rs, I2CSettings settings); // Фунуция п
  * str- отправляемая строка
  * cyrillic = 0- нет кириллических символов, cyrillic = 1- есть кириллические символы
  */
-void lcd_send_string(char *str,uint8_t cyrillic, I2CSettings settings);
+void lcd_send_string(char *str, I2CSettings settings);
 
 
 /* Фунуция очистки дисплея */

@@ -26,22 +26,23 @@ void Screen::move_cursor_pos() {
 		lcd_send_bite(this->cursor, 1, this->i2cSettings);
 	} else if (this->cursorPos == 0x54) {
 		lcd_clear(this->i2cSettings);
-		HAL_Delay(5);
+		HAL_Delay(2);
 
 		ddram_set_addr(this->cursorPos, this->i2cSettings);
-		lcd_send_bite(this->cursor, 1, this->i2cSettings);
+			lcd_send_bite(this->cursor, 1, this->i2cSettings);
 
-		ddram_set_addr(this->rowPos1 + 1, this->i2cSettings);
-		lcd_send_string(this->line2, 1, this->i2cSettings);
+			ddram_set_addr(this->rowPos1 + 1, this->i2cSettings);
+			lcd_send_string(this->line2, this->i2cSettings);
 
-		ddram_set_addr(this->rowPos2 + 1, this->i2cSettings);
-		lcd_send_string(this->line3, 1, this->i2cSettings);
+			ddram_set_addr(this->rowPos2 + 1, this->i2cSettings);
+			lcd_send_string(this->line3, this->i2cSettings);
 
-		ddram_set_addr(this->rowPos3 + 1, this->i2cSettings);
-		lcd_send_string(this->line4, 1, this->i2cSettings);
+			ddram_set_addr(this->rowPos3 + 1, this->i2cSettings);
+			lcd_send_string(this->line4, this->i2cSettings);
 
-		ddram_set_addr(this->rowPos4 + 1, this->i2cSettings);
-		lcd_send_string(this->line5, 1, this->i2cSettings);
+			ddram_set_addr(this->rowPos4 + 1, this->i2cSettings);
+			lcd_send_string(this->line5, this->i2cSettings);
+
 	}
 }
 
@@ -50,16 +51,16 @@ void Screen::display() {
 	lcd_send_bite(this->cursor, 1, this->i2cSettings);
 
 	ddram_set_addr(this->rowPos1 + 1, this->i2cSettings);
-	lcd_send_string(this->line1, 1, this->i2cSettings);
+	lcd_send_string(this->line1, this->i2cSettings);
 
 	ddram_set_addr(this->rowPos2 + 1, this->i2cSettings);
-	lcd_send_string(this->line2, 1, this->i2cSettings);
+	lcd_send_string(this->line2, this->i2cSettings);
 
 	ddram_set_addr(this->rowPos3 + 1, this->i2cSettings);
-	lcd_send_string(this->line3, 1, this->i2cSettings);
+	lcd_send_string(this->line3, this->i2cSettings);
 
 	ddram_set_addr(this->rowPos4 + 1, this->i2cSettings);
-	lcd_send_string(this->line4, 1, this->i2cSettings);
+	lcd_send_string(this->line4, this->i2cSettings);
 }
 
 
