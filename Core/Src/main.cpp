@@ -51,7 +51,7 @@ DMA_HandleTypeDef hdma_usart2_tx;
 /* USER CODE BEGIN PV */
 uint8_t flag;
 
-extern uint8_t lcd_i2c_state;
+extern uint8_t i2cLcdState;
 
 Button button_down(GPIOA, 0);
 Screen main_screen(&hi2c1, 0x4E);
@@ -107,83 +107,24 @@ int main(void)
   MX_USART2_UART_Init();
   /* USER CODE BEGIN 2 */
   I2CSettings i2cSettings { &hi2c1, 0x4E };
-  lcd_initialization(i2cSettings);
+  initLcd(i2cSettings);
   main_screen.display();
-  main_screen.display();
-
   /* USER CODE END 2 */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
   while (1)
   {
-		if (button_down.clicked() == 1 && button_down.get_prev_st() == 0) {
-			button_down.set_prev_st(1);
-			main_screen.move_cursor_pos();
+		if (button_down.clicked() && button_down.getPrevSt() == 0) {
+			button_down.setPrevSt(1);
+			main_screen.cursorDown();
 		}
 
-		if (button_down.get_prev_st() == 1) {
-			if (button_down.unclicked() && button_down.get_prev_st() == 1) {
-				button_down.set_prev_st(0);
+		if (button_down.getPrevSt() == 1) {
+			if (button_down.unclicked()) {
+				button_down.setPrevSt(0);
 			}
-			//lcd_clear(&hi2c1, 0x4E);
-			//HAL_Delay(1);
 		}
-
-
-
-	  	/*
-		if (button_down.clicked() && button_down.get_prev_st() == 0) {
-			button_down.set_prev_st(1);
-			lcd_clear(&hi2c1, 0x4E);
-			HAL_Delay(1);
-			char a[] { "Нажато" };
-			ddram_set_addr(0x00, &hi2c1, 0x4E);
-			lcd_send_string(a, 1, &hi2c1, 0x4E);
-		}
-
-		if (button_down.unclicked() && button_down.get_prev_st() == 1) {
-			button_down.set_prev_st(0);
-			lcd_clear(&hi2c1, 0x4E);
-			HAL_Delay(1);
-			char a[] { "Не нажато" };
-			ddram_set_addr(0x00, &hi2c1, 0x4E);
-			lcd_send_string(a, 1, &hi2c1, 0x4E);
-		}
-		*/
-
-
-		/*
-		 Screen main_screen(1, 1, 1);
-		 char a[1];
-		 a[0] = main_screen.num;
-		 ddram_set_addr(0x00, &hi2c1);
-		 lcd_send_string(a, 1, &hi2c1);
-
-		 */
-
-		/*
-		 {
-		 char a[] {"Время и дата"};
-		 ddram_set_addr(0x00, &hi2c1);
-		 lcd_send_string(a, 1, &hi2c1);
-		 }
-		 {
-		 char a[] {"Сигналы ТС"};
-		 ddram_set_addr(0x40, &hi2c1);
-		 lcd_send_string(a, 1, &hi2c1);
-		 }
-		 {
-		 char a[] {"Сигналы ТУ"};
-		 ddram_set_addr(0x14, &hi2c1);
-		 lcd_send_string(a, 1, &hi2c1);
-		 }
-		 {
-		 char a[] {"Сигналы ТИ"};
-		 ddram_set_addr(0x54, &hi2c1);
-		 lcd_send_string(a, 1, &hi2c1);
-		 }
-		 */
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
@@ -422,7 +363,7 @@ static void MX_GPIO_Init(void)
 
 /* USER CODE BEGIN 4 */
 void HAL_I2C_MasterTxCpltCallback(I2C_HandleTypeDef *hi2c) {
-	lcd_i2c_state = 0;
+	i2cLcdState = 0;
 }
 
 void HAL_I2C_ErrorCallback(I2C_HandleTypeDef *hi2c) {

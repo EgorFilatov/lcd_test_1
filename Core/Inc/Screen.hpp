@@ -36,7 +36,8 @@ private:
 public:
 	Screen(I2C_HandleTypeDef *hi2c, uint8_t i2cAddr);
 
-	void move_cursor_pos();
+	void cursorDown();
+	void cursorUp();
 
 	void display();
 };

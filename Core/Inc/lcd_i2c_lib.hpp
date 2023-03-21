@@ -18,11 +18,11 @@ struct I2CSettings {
  ******************************************************************************
  * cyrillic_character- символ для кодирования
  */
-char* cyrillic_characters_encoding(char *cyrillic_character);
+char *recodeCyr(char *charCyr);
 
 
 /* Фунуция поиска адреса i2c дисплея */
-void i2c_addr_scan(I2C_HandleTypeDef *hi2c);
+void ScanI2C(I2C_HandleTypeDef *hi2c);
 
 
 /* Фунуция отправки одного байта
@@ -30,7 +30,7 @@ void i2c_addr_scan(I2C_HandleTypeDef *hi2c);
  * bite- отправляемый байт
  * rs = 0- отправка настроек, rs = 1- отправка символа
  */
-void lcd_send_bite(uint8_t bite, uint8_t rs, I2CSettings settings); // Фунуция поиска адреса i2c исплея
+void sendLcdByte(uint8_t bite, uint8_t rs, I2CSettings settings); // Фунуция поиска адреса i2c исплея
 
 
 /* Фунуция отправки строки
@@ -38,21 +38,21 @@ void lcd_send_bite(uint8_t bite, uint8_t rs, I2CSettings settings); // Фунуция п
  * str- отправляемая строка
  * cyrillic = 0- нет кириллических символов, cyrillic = 1- есть кириллические символы
  */
-void lcd_send_string(char *str, I2CSettings settings);
+void sendLcdStr(char *string, I2CSettings settings);
 
 
 /* Фунуция очистки дисплея */
-void lcd_clear(I2CSettings settings);
+void clearLcd(I2CSettings settings);
 
 
 /* Фунуция записи адреса DDRAM памяти в адресный указатель
  ******************************************************************************
  * ddram_addr- адрес памяти
  */
-void ddram_set_addr(uint8_t ddram_addr, I2CSettings settings);
+void setDdramAddr(uint8_t ddramAddr, I2CSettings settings);
 
 
 /* Фунуция инициализации дисплея */
-void lcd_initialization(I2CSettings settings);
+void initLcd(I2CSettings settings);
 
 #endif
