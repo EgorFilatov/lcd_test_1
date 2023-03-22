@@ -55,6 +55,7 @@ extern uint8_t i2cLcdState;
 
 Button button_down(GPIOA, 0);
 Screen main_screen(&hi2c1, 0x4E);
+
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -109,6 +110,7 @@ int main(void)
   I2CSettings i2cSettings { &hi2c1, 0x4E };
   initLcd(i2cSettings);
   main_screen.display();
+  main_screen.setLine("1234");
   /* USER CODE END 2 */
 
   /* Infinite loop */

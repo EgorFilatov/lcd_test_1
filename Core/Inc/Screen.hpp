@@ -1,5 +1,6 @@
 #include "main.hpp"
 #include "lcd_i2c_lib.hpp"
+#include <vector>
 
 #ifndef SRC_SCREEN_HPP_
 #define SRC_SCREEN_HPP_
@@ -20,26 +21,23 @@ private:
 	uint8_t rowPos3 { 0x14 };
 	uint8_t rowPos4 { 0x54 };
 
+	std::vector<char> line;
+	std::vector<int> lineSize;
+
 	char line1[13] = "Время и дата";
 	char line2[11] = "Сигналы ТС";
 	char line3[11] = "Сигналы ТУ";
 	char line4[11] = "Сигналы ТИ";
 	char line5[10] = "Настройки";
-
-/*
-	char line1[14] = "Date and time";
-	char line2[11] = "Sigtals TS";
-	char line3[11] = "Signals TY";
-	char line4[11] = "Signals TI";
-	char line5[9] = "Settings";
-*/
 public:
 	Screen(I2C_HandleTypeDef *hi2c, uint8_t i2cAddr);
-
 	void cursorDown();
+
 	void cursorUp();
 
 	void display();
+
+	void setLine(char *line);
 };
 
 #endif

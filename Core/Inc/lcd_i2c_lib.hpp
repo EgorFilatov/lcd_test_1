@@ -10,8 +10,6 @@
 struct I2CSettings {
 	I2C_HandleTypeDef *hi2c;
 	uint8_t i2cAddr;
-
-	//I2CSettings(I2C_HandleTypeDef *hi2c, uint8_t lcdAddr);
 };
 
 /* Фунуция кодирования кириллических символов
