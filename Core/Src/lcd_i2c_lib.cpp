@@ -169,6 +169,16 @@ void sendLcdStr(char *string, I2CSettings settings) {
 	}
 }
 
+
+void sendLcdStrAB(char *string, I2CSettings settings, uint8_t a, uint8_t b) {
+	for (uint8_t i = a; i < b; ++i) {
+		char stringCopy = *string;
+		stringCopy = *recodeCyr(&stringCopy);
+		sendLcdByte(uint8_t(stringCopy), 1, settings);
+		++string;
+	}
+}
+
 void clearLcd(I2CSettings settings) {
 	uint8_t ByteArr[4] { 4, 0, 20, 0 };
 

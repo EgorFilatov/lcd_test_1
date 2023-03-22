@@ -109,8 +109,17 @@ int main(void)
   /* USER CODE BEGIN 2 */
   I2CSettings i2cSettings { &hi2c1, 0x4E };
   initLcd(i2cSettings);
+  char line1[4] = "123";
+  char line2[4] = "456";
+  char line3[4] = "789";
+  char line4[7] = "101112";
+  char line5[7] = "131415";
+  main_screen.setLine(line1);
+  main_screen.setLine(line2);
+  main_screen.setLine(line3);
+  main_screen.setLine(line4);
+  main_screen.setLine(line5);
   main_screen.display();
-  main_screen.setLine("1234");
   /* USER CODE END 2 */
 
   /* Infinite loop */

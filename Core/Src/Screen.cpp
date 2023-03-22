@@ -52,16 +52,17 @@ void Screen::display() {
 	sendLcdByte(this->cursor, 1, this->i2cSettings);
 
 	setDdramAddr(this->rowPos1 + 1, this->i2cSettings);
-	//sendLcdStr(&(this->my_line.my_string[0]), this->i2cSettings);
+	sendLcdStrAB(&(this->line[0]), this->i2cSettings, 0, this->lineSize[0]);
 
 	setDdramAddr(this->rowPos2 + 1, this->i2cSettings);
-	sendLcdStr(this->line2, this->i2cSettings);
+	sendLcdStrAB(&(this->line[this->lineSize[0]]), this->i2cSettings, this->lineSize[0], (this->lineSize[0] + this->lineSize[1]));
 
 	setDdramAddr(this->rowPos3 + 1, this->i2cSettings);
-	sendLcdStr(this->line3, this->i2cSettings);
+	sendLcdStrAB(&(this->line[(this->lineSize[0] + this->lineSize[1])]), this->i2cSettings, (this->lineSize[0] + this->lineSize[1]), (this->lineSize[1] + this->lineSize[2]));
 
 	setDdramAddr(this->rowPos4 + 1, this->i2cSettings);
-	sendLcdStr(this->line4, this->i2cSettings);
+	sendLcdStrAB(&(this->line[(this->lineSize[1] + this->lineSize[2])]), this->i2cSettings, (this->lineSize[1] + this->lineSize[2]), (this->lineSize[2] + this->lineSize[3]));
+
 }
 
 void Screen::setLine(char *line) {
