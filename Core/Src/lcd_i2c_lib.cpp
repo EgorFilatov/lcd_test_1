@@ -143,15 +143,15 @@ void i2c_addr_scan(I2C_HandleTypeDef *hi2c) {
 }
 */
 
-void sendLcdByte(uint8_t bite, uint8_t rs, I2CSettings settings) {
-	uint8_t upperBite = bite & 0xF0;
-	uint8_t lowerBite = (bite << 4) & 0xF0;
+void sendLcdInstruction(uint8_t instruction, I2CSettings settings) {
+	uint8_t upperBite = instruction & 0xF0;
+	uint8_t lowerBite = (instruction << 4) & 0xF0;
 
 	uint8_t ByteArr[4] {};
 
-	ByteArr[0] = upperBite | rs | LED | EN;
+	ByteArr[0] = upperBite | LED | EN;
 	ByteArr[1] = 0;
-	ByteArr[2] = lowerBite | rs | LED | EN;
+	ByteArr[2] = lowerBite | LED | EN;
 	ByteArr[3] = 0;
 
 	i2cLcdState = 1;
@@ -160,21 +160,60 @@ void sendLcdByte(uint8_t bite, uint8_t rs, I2CSettings settings) {
 	}
 }
 
-void sendLcdStr(char *string, I2CSettings settings) {
+
+void sendLcdChar(uint8_t character, uint8_t ddramAddr, I2CSettings settings) {
+	setDdramAddr(ddramAddr, settings);
+
+	uint8_t upperBite = character & 0xF0;
+	uint8_t lowerBite = (character << 4) & 0xF0;
+
+	uint8_t ByteArr[4] {};
+
+	ByteArr[0] = upperBite | 1 | LED | EN;
+	ByteArr[1] = 0;
+	ByteArr[2] = lowerBite | 1 | LED | EN;
+	ByteArr[3] = 0;
+
+	i2cLcdState = 1;
+	HAL_I2C_Master_Transmit_DMA(settings.hi2c, settings.i2cAddr, ByteArr, 4);
+	while (i2cLcdState == 1) {
+	}
+}
+
+void sendLcdByte(uint8_t character, I2CSettings settings) {
+	uint8_t upperBite = character & 0xF0;
+	uint8_t lowerBite = (character << 4) & 0xF0;
+
+	uint8_t ByteArr[4] {};
+
+	ByteArr[0] = upperBite | 1 | LED | EN;
+	ByteArr[1] = 0;
+	ByteArr[2] = lowerBite | 1 | LED | EN;
+	ByteArr[3] = 0;
+
+	i2cLcdState = 1;
+	HAL_I2C_Master_Transmit_DMA(settings.hi2c, settings.i2cAddr, ByteArr, 4);
+	while (i2cLcdState == 1) {
+	}
+}
+
+void sendLcdStr(char *string, uint8_t ddramAddr, I2CSettings settings) {
+	setDdramAddr(ddramAddr, settings);
 	while (*string) {
 		char stringCopy = *string;
 		stringCopy = *recodeCyr(&stringCopy);
-		sendLcdByte(uint8_t(stringCopy), 1, settings);
+		sendLcdByte(uint8_t(stringCopy), settings);
 		++string;
 	}
 }
 
 
-void sendLcdStrAB(char *string, I2CSettings settings, uint8_t a, uint8_t b) {
+void sendLcdStrAB(char *string, uint8_t a, uint8_t b, uint8_t ddramAddr, I2CSettings settings) {
+	setDdramAddr(ddramAddr, settings);
 	for (uint8_t i = a; i < b; ++i) {
 		char stringCopy = *string;
 		stringCopy = *recodeCyr(&stringCopy);
-		sendLcdByte(uint8_t(stringCopy), 1, settings);
+		sendLcdByte(uint8_t(stringCopy), settings);
 		++string;
 	}
 }
@@ -186,6 +225,10 @@ void clearLcd(I2CSettings settings) {
 	HAL_I2C_Master_Transmit_DMA(settings.hi2c, settings.i2cAddr, ByteArr, 4);
 	while (i2cLcdState == 1) {
 	}
+}
+
+void clearChar(uint8_t charPos, I2CSettings settings) {
+	sendLcdChar(0b10000000, charPos, settings);
 }
 
 void setDdramAddr(uint8_t ddramAddr, I2CSettings settings) {
@@ -208,18 +251,18 @@ void setDdramAddr(uint8_t ddramAddr, I2CSettings settings) {
 void initLcd(I2CSettings settings) {
 	HAL_Delay(50);
 
-	sendLcdByte(0b00110000, 0, settings);   // 8ми битный интерфейс
+	sendLcdInstruction(0b00110000, settings);   // 8ми битный интерфейс
 	HAL_Delay(40);
 
-	sendLcdByte(0b00000010, 0, settings);   // установка курсора в начале строки
+	sendLcdInstruction(0b00000010, settings);   // установка курсора в начале строки
 	HAL_Delay(40);
 
-	sendLcdByte(0b00001100, 0, settings);   // нормальный режим работы, выкл курсор
+	sendLcdInstruction(0b00001100, settings);   // нормальный режим работы, выкл курсор
 	HAL_Delay(40);
 
-	sendLcdByte(0b00000100, 0, settings);
+	sendLcdInstruction(0b00000100, settings);
 	HAL_Delay(40);
 
-	sendLcdByte(0b00000001, 0, settings);   // очистка дисплея
+	sendLcdInstruction(0b00000001, settings);   // очистка дисплея
 	HAL_Delay(2);
 }

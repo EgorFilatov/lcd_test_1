@@ -5,10 +5,11 @@
 
 class Button {
 private:
-	GPIO_TypeDef *GPIOx;
-	uint8_t pin;
-	uint8_t prevSt;
-	uint8_t debounceCounter;
+	GPIO_TypeDef* port;
+	uint8_t pin { };
+	uint8_t prevSt { };
+	uint8_t debounceCounter { };
+
 public:
 	Button(GPIO_TypeDef *GPIOx, uint8_t pin);
 

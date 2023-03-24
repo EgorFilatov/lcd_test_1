@@ -13,7 +13,7 @@ private:
 
 	uint8_t i2cAddr;
 
-	uint8_t cursor { 0xC9 };
+	uint8_t cursorChar { 0xC9 };
 	uint8_t cursorPos { 0x00 };
 
 	uint8_t rowPos1 { 0x00 };
@@ -22,20 +22,20 @@ private:
 	uint8_t rowPos4 { 0x54 };
 
 	std::vector<char> line;
-	std::vector<int> lineSize;
+	std::vector<uint8_t> startPos;
+	std::vector<uint8_t> endPos;
+	std::vector<uint8_t> lineLcdPos;
+	uint8_t linesNum {};
 
-	char line1[13] = "Время и дата";
-	char line2[11] = "Сигналы ТС";
-	char line3[11] = "Сигналы ТУ";
-	char line4[11] = "Сигналы ТИ";
-	char line5[10] = "Настройки";
+	uint8_t shiftFlag {};
+
 public:
 	Screen(I2C_HandleTypeDef *hi2c, uint8_t i2cAddr);
 	void cursorDown();
 
 	void cursorUp();
 
-	void display();
+	void displayOneCol(uint8_t shiftRight, uint8_t shiftDown, int8_t shiftMenu);
 
 	void setLine(char *line);
 };
