@@ -110,15 +110,15 @@ int main(void)
   /* USER CODE BEGIN 2 */
   I2CSettings i2cSettings { &hi2c1, 0x4E };
   initLcd(i2cSettings);
-  main_screen.setLine("Время и дата");
-  main_screen.setLine("Сигналы ТС");
-  main_screen.setLine("Сигналы ТУ");
-  main_screen.setLine("Сигналы ТИ");
-  main_screen.setLine("Настройки");
-  main_screen.setLine("123");
-  main_screen.setLine("456");
-  main_screen.setLine("789");
-  main_screen.displayOneCol(1, 0, 0);
+  //main_screen.setLineVal("Время и дата");
+  //main_screen.setLineVal("Сигналы ТС");
+  //main_screen.setLineVal("Сигналы ТУ");
+  //main_screen.setLineVal("Сигналы ТИ");
+  //main_screen.setLineVal("Настройки");
+  //main_screen.setLineVal("123");
+  //main_screen.setLineVal("456");
+  //main_screen.setLineVal("789");
+  //main_screen.displayOneCol(1, 0, 0);
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -138,7 +138,7 @@ int main(void)
 
 		if (button_up.clicked() && button_up.getPrevSt() == 0) {
 			button_up.setPrevSt(1);
-			main_screen.cursorDown();
+			main_screen.cursorUp();
 		} else if (button_up.getPrevSt() == 1) {
 			if (button_up.unclicked()) {
 				button_up.setPrevSt(0);

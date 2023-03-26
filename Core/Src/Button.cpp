@@ -18,25 +18,31 @@ void Button::setPrevSt(uint8_t prevSt) {
 }
 
 uint8_t Button::clicked() {
-	if ((this->port->IDR & (1 << pin)) == 1 && this->debounceCounter == 0) {
-		this->debounceCounter = 1;
-		HAL_TIM_Base_Start_IT (&htim6);
-	} else if ((this->port->IDR & (1 << pin)) == 1 && this->debounceCounter == 10) {
-		HAL_TIM_Base_Stop_IT(&htim6);
-		this->debounceCounter = 0;
-		return 1;
+	if (this->port->IDR & (1 << pin)) {
+		if (this->debounceCounter == 0) {
+			this->debounceCounter = 1;
+			HAL_TIM_Base_Start_IT(&htim6);
+		}
+		if (this->debounceCounter == 10) {
+			HAL_TIM_Base_Stop_IT(&htim6);
+			this->debounceCounter = 0;
+			return 1;
+		}
 	}
 	return 0;
 }
 
 uint8_t Button::unclicked() {
-	if ((this->port->IDR & (1 << pin)) == 0 && this->debounceCounter == 0) {
-		this->debounceCounter = 1;
-		HAL_TIM_Base_Start_IT (&htim6);
-	} else if ((this->port->IDR & (1 << pin)) == 0 && this->debounceCounter == 10) {
-		HAL_TIM_Base_Stop_IT(&htim6);
-		this->debounceCounter = 0;
-		return 1;
+	if (!(this->port->IDR & (1 << pin))) {
+		if (this->debounceCounter == 0) {
+			this->debounceCounter = 1;
+			HAL_TIM_Base_Start_IT(&htim6);
+		}
+		if (this->debounceCounter == 10) {
+			HAL_TIM_Base_Stop_IT(&htim6);
+			this->debounceCounter = 0;
+			return 1;
+		}
 	}
 	return 0;
 }
