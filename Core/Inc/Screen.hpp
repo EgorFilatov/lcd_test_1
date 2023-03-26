@@ -2,7 +2,6 @@
 #define SRC_SCREEN_HPP_
 
 #include "main.hpp"
-#include "Line.hpp"
 #include "lcd_i2c_lib.hpp"
 #include <vector>
 #include <string>
@@ -11,6 +10,22 @@ extern I2C_HandleTypeDef hi2c1;
 
 class Screen {
 private:
+	class Line {
+	private:
+		std::string val;
+		Screen* childScreen;
+	public:
+		Line();
+
+		void setVal(std::string val);
+
+		std::string getVal();
+
+		void setChild(Screen *childScreen);
+
+		Screen* getChild();
+	};
+
 	Screen *childScreen;
 	Screen *parentScreen;
 
@@ -26,13 +41,9 @@ private:
 	uint8_t rowPos3 { 0x14 };
 	uint8_t rowPos4 { 0x54 };
 
-	std::vector<char> line;
-	std::vector<uint8_t> startPos;
-	std::vector<uint8_t> endPos;
-	std::vector<uint8_t> lineLcdPos;
-	uint8_t linesNum {};
+	std::vector<Line> line;
 
-	std::vector<Line> lines;
+	uint8_t linesNum {};
 
 	uint8_t shiftFlag {};
 
@@ -44,11 +55,9 @@ public:
 
 	void displayOneCol(uint8_t shiftRight, uint8_t shiftDown, int8_t shiftMenu);
 
-	void setLineVal(char *line);
+	void setLineVal(std::string value, Screen *childScreen);
 
-	void LineVal(std::string value);
-
-	void selectItem();
+	Screen*  selectItem();
 };
 
 #endif

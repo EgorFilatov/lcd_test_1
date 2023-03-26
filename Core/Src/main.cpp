@@ -56,6 +56,7 @@ extern uint8_t i2cLcdState;
 Button button_down(GPIOA, 0);
 Button button_up(GPIOA, 10);
 Screen main_screen(&hi2c1, 0x4E);
+Screen date_screen(&hi2c1, 0x4E);
 
 /* USER CODE END PV */
 
@@ -110,15 +111,22 @@ int main(void)
   /* USER CODE BEGIN 2 */
   I2CSettings i2cSettings { &hi2c1, 0x4E };
   initLcd(i2cSettings);
-  //main_screen.setLineVal("Время и дата");
-  //main_screen.setLineVal("Сигналы ТС");
-  //main_screen.setLineVal("Сигналы ТУ");
-  //main_screen.setLineVal("Сигналы ТИ");
-  //main_screen.setLineVal("Настройки");
-  //main_screen.setLineVal("123");
-  //main_screen.setLineVal("456");
-  //main_screen.setLineVal("789");
-  //main_screen.displayOneCol(1, 0, 0);
+
+  main_screen.setLineVal("Время и дата", &date_screen);
+  main_screen.setLineVal("Сигналы ТС", &main_screen);
+  main_screen.setLineVal("Сигналы ТУ", &main_screen);
+  main_screen.setLineVal("Сигналы ТИ", &main_screen);
+  main_screen.setLineVal("Настройки", &main_screen);
+  main_screen.setLineVal("123", &main_screen);
+  main_screen.setLineVal("456", &main_screen);
+  main_screen.setLineVal("789", &main_screen);
+
+  date_screen.setLineVal("дата 1", &date_screen);
+  date_screen.setLineVal("дата 2", &date_screen);
+  date_screen.setLineVal("дата 3", &date_screen);
+  date_screen.setLineVal("дата 4", &date_screen);
+
+  main_screen.displayOneCol(1, 0, 0);
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -138,7 +146,8 @@ int main(void)
 
 		if (button_up.clicked() && button_up.getPrevSt() == 0) {
 			button_up.setPrevSt(1);
-			main_screen.cursorUp();
+			clearLcd(i2cSettings);
+			main_screen.selectItem()->displayOneCol(1, 0, 0);
 		} else if (button_up.getPrevSt() == 1) {
 			if (button_up.unclicked()) {
 				button_up.setPrevSt(0);
