@@ -37,13 +37,13 @@ Idx Name          Size      VMA       LMA       File off  Algn
                   CONTENTS, READONLY, DEBUGGING, OCTETS
  16 .debug_macro  00011f0b  00000000  00000000  000524c0  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 17 .debug_line   00016ec4  00000000  00000000  000643cb  2**0
+ 17 .debug_line   00016f74  00000000  00000000  000643cb  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 18 .debug_str    0007c605  00000000  00000000  0007b28f  2**0
+ 18 .debug_str    0007c647  00000000  00000000  0007b33f  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 19 .comment      00000050  00000000  00000000  000f7894  2**0
+ 19 .comment      00000050  00000000  00000000  000f7986  2**0
                   CONTENTS, READONLY
- 20 .debug_frame  00006958  00000000  00000000  000f78e4  2**2
+ 20 .debug_frame  00006958  00000000  00000000  000f79d8  2**2
                   CONTENTS, READONLY, DEBUGGING, OCTETS
 
 Disassembly of section .text:
@@ -4302,7 +4302,7 @@ static void MX_GPIO_Init(void)
  8001c42:	f001 f935 	bl	8002eb0 <HAL_GPIO_WritePin>
 
   /*Configure GPIO pins : PA0 PA10 */
-  GPIO_InitStruct.Pin = GPIO_PIN_0|GPIO_PIN_10;
+  GPIO_InitStruct.Pin = GPIO_PIN_0|GPIO_PIN_10|GPIO_PIN_4|GPIO_PIN_5;
  8001c46:	193b      	adds	r3, r7, r4
  8001c48:	4a2b      	ldr	r2, [pc, #172]	; (8001cf8 <_ZL12MX_GPIO_Initv+0x148>)
  8001c4a:	601a      	str	r2, [r3, #0]
@@ -4411,7 +4411,7 @@ static void MX_GPIO_Init(void)
  8001cec:	40021000 	.word	0x40021000
  8001cf0:	48000400 	.word	0x48000400
  8001cf4:	48000800 	.word	0x48000800
- 8001cf8:	00000401 	.word	0x00000401
+ 8001cf8:	00000431 	.word	0x00000431
 
 08001cfc <HAL_I2C_MasterTxCpltCallback>:
 
@@ -5763,110 +5763,49 @@ void SystemInit(void)
 	...
 
 0800246c <Reset_Handler>:
-
-  .section .text.Reset_Handler
-  .weak Reset_Handler
-  .type Reset_Handler, %function
-Reset_Handler:
-  ldr   r0, =_estack
  800246c:	480d      	ldr	r0, [pc, #52]	; (80024a4 <LoopForever+0x2>)
-  mov   sp, r0          /* set stack pointer */
  800246e:	4685      	mov	sp, r0
-
-/* Call the clock system initialization function.*/
-  bl  SystemInit
  8002470:	f7ff fff6 	bl	8002460 <SystemInit>
-
-/* Copy the data segment initializers from flash to SRAM */
-  ldr r0, =_sdata
  8002474:	480c      	ldr	r0, [pc, #48]	; (80024a8 <LoopForever+0x6>)
-  ldr r1, =_edata
  8002476:	490d      	ldr	r1, [pc, #52]	; (80024ac <LoopForever+0xa>)
-  ldr r2, =_sidata
  8002478:	4a0d      	ldr	r2, [pc, #52]	; (80024b0 <LoopForever+0xe>)
-  movs r3, #0
  800247a:	2300      	movs	r3, #0
-  b LoopCopyDataInit
  800247c:	e002      	b.n	8002484 <LoopCopyDataInit>
 
 0800247e <CopyDataInit>:
-
-CopyDataInit:
-  ldr r4, [r2, r3]
  800247e:	58d4      	ldr	r4, [r2, r3]
-  str r4, [r0, r3]
  8002480:	50c4      	str	r4, [r0, r3]
-  adds r3, r3, #4
  8002482:	3304      	adds	r3, #4
 
 08002484 <LoopCopyDataInit>:
-
-LoopCopyDataInit:
-  adds r4, r0, r3
  8002484:	18c4      	adds	r4, r0, r3
-  cmp r4, r1
  8002486:	428c      	cmp	r4, r1
-  bcc CopyDataInit
  8002488:	d3f9      	bcc.n	800247e <CopyDataInit>
-  
-/* Zero fill the bss segment. */
-  ldr r2, =_sbss
  800248a:	4a0a      	ldr	r2, [pc, #40]	; (80024b4 <LoopForever+0x12>)
-  ldr r4, =_ebss
  800248c:	4c0a      	ldr	r4, [pc, #40]	; (80024b8 <LoopForever+0x16>)
-  movs r3, #0
  800248e:	2300      	movs	r3, #0
-  b LoopFillZerobss
  8002490:	e001      	b.n	8002496 <LoopFillZerobss>
 
 08002492 <FillZerobss>:
-
-FillZerobss:
-  str  r3, [r2]
  8002492:	6013      	str	r3, [r2, #0]
-  adds r2, r2, #4
  8002494:	3204      	adds	r2, #4
 
 08002496 <LoopFillZerobss>:
-
-LoopFillZerobss:
-  cmp r2, r4
  8002496:	42a2      	cmp	r2, r4
-  bcc FillZerobss
  8002498:	d3fb      	bcc.n	8002492 <FillZerobss>
-
-/* Call static constructors */
-  bl __libc_init_array
  800249a:	f004 faed 	bl	8006a78 <__libc_init_array>
-/* Call the application's entry point.*/
-  bl main
  800249e:	f7ff f9bf 	bl	8001820 <main>
 
 080024a2 <LoopForever>:
-
-LoopForever:
-    b LoopForever
  80024a2:	e7fe      	b.n	80024a2 <LoopForever>
-  ldr   r0, =_estack
  80024a4:	20002000 	.word	0x20002000
-  ldr r0, =_sdata
  80024a8:	20000000 	.word	0x20000000
-  ldr r1, =_edata
  80024ac:	20000070 	.word	0x20000070
-  ldr r2, =_sidata
  80024b0:	08006c04 	.word	0x08006c04
-  ldr r2, =_sbss
  80024b4:	20000070 	.word	0x20000070
-  ldr r4, =_ebss
  80024b8:	2000033c 	.word	0x2000033c
 
 080024bc <ADC1_IRQHandler>:
- * @retval : None
-*/
-    .section .text.Default_Handler,"ax",%progbits
-Default_Handler:
-Infinite_Loop:
-  b Infinite_Loop
  80024bc:	e7fe      	b.n	80024bc <ADC1_IRQHandler>
 	...
 
