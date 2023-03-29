@@ -9,11 +9,11 @@
 extern I2C_HandleTypeDef hi2c1;
 
 class Screen {
-private:
+
 	class Line {
 	private:
 		std::string val;
-		Screen* childScreen;
+		Screen *childScreen;
 	public:
 		Line();
 
@@ -26,7 +26,8 @@ private:
 		Screen* getChild();
 	};
 
-	Screen *childScreen;
+private:
+
 	Screen *parentScreen;
 
 	I2CSettings i2cSettings;
@@ -48,16 +49,21 @@ private:
 	uint8_t shiftFlag {};
 
 public:
-	Screen(I2C_HandleTypeDef *hi2c, uint8_t i2cAddr);
+	Screen(I2C_HandleTypeDef *hi2c, Screen *parentScreen, uint8_t i2cAddr);
+
+	Screen(const Screen &screen);
+
 	void cursorDown();
 
 	void cursorUp();
 
+	Screen* selectItem();
+
+	Screen* getParent();
+
 	void displayOneCol(uint8_t shiftRight, uint8_t shiftDown, int8_t shiftMenu);
 
 	void setLineVal(std::string value, Screen *childScreen);
-
-	Screen*  selectItem();
 };
 
 #endif
