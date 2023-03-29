@@ -1,5 +1,4 @@
 "./Core/Src/Button.o"
-"./Core/Src/Line.o"
 "./Core/Src/Screen.o"
 "./Core/Src/lcd_i2c_lib.o"
 "./Core/Src/main.o"

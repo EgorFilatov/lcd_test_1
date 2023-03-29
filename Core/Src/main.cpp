@@ -53,9 +53,13 @@ uint8_t flag;
 
 extern uint8_t i2cLcdState;
 
-Button button_down(GPIOA, 0);
-Button button_up(GPIOA, 10);
-Screen main_screen(&hi2c1, 0x4E);
+Button downButton(GPIOA, 0);
+Button upButton(GPIOA, 10);
+Button enterButton(GPIOA, 4);
+Button backButton(GPIOA, 5);
+
+Screen mainScreen(&hi2c1, &mainScreen, 0x4E);
+Screen dateScreen(&hi2c1, &mainScreen, 0x4E);
 
 /* USER CODE END PV */
 
@@ -110,38 +114,63 @@ int main(void)
   /* USER CODE BEGIN 2 */
   I2CSettings i2cSettings { &hi2c1, 0x4E };
   initLcd(i2cSettings);
-  //main_screen.setLineVal("Время и дата");
-  //main_screen.setLineVal("Сигналы ТС");
-  //main_screen.setLineVal("Сигналы ТУ");
-  //main_screen.setLineVal("Сигналы ТИ");
-  //main_screen.setLineVal("Настройки");
-  //main_screen.setLineVal("123");
-  //main_screen.setLineVal("456");
-  //main_screen.setLineVal("789");
-  //main_screen.displayOneCol(1, 0, 0);
+
+  mainScreen.setLineVal("Время и дата", &dateScreen);
+  mainScreen.setLineVal("Сигналы ТС", &mainScreen);
+  mainScreen.setLineVal("Сигналы ТУ", &mainScreen);
+  mainScreen.setLineVal("Сигналы ТИ", &mainScreen);
+  mainScreen.setLineVal("Настройки", &mainScreen);
+  mainScreen.setLineVal("123", &mainScreen);
+  mainScreen.setLineVal("456", &mainScreen);
+  mainScreen.setLineVal("789", &mainScreen);
+
+  dateScreen.setLineVal("дата 1", &dateScreen);
+  dateScreen.setLineVal("дата 2", &dateScreen);
+  dateScreen.setLineVal("дата 3", &dateScreen);
+  dateScreen.setLineVal("дата 4", &dateScreen);
+
+  mainScreen.displayOneCol(1, 0, 0);
   /* USER CODE END 2 */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
   while (1)
   {
-		if (button_down.clicked() && button_down.getPrevSt() == 0) {
-			button_down.setPrevSt(1);
-			main_screen.cursorDown();
-		} else if (button_down.getPrevSt() == 1) {
-			if (button_down.unclicked()) {
-				button_down.setPrevSt(0);
+		if (downButton.clicked() && downButton.getPrevSt() == 0) {
+			downButton.setPrevSt(1);
+			mainScreen.cursorDown();
+		} else if (downButton.getPrevSt() == 1) {
+			if (downButton.unclicked()) {
+				downButton.setPrevSt(0);
 			}
 		}
 
+		if (upButton.clicked() && upButton.getPrevSt() == 0) {
+			upButton.setPrevSt(1);
+			mainScreen.cursorUp();
+		} else if (upButton.getPrevSt() == 1) {
+			if (upButton.unclicked()) {
+				upButton.setPrevSt(0);
+			}
+		}
 
+		if (enterButton.clicked() && enterButton.getPrevSt() == 0) {
+			enterButton.setPrevSt(1);
+			initLcd(i2cSettings);
+			mainScreen.selectItem()->displayOneCol(1, 0, 0);
+		} else if (enterButton.getPrevSt() == 1) {
+			if (enterButton.unclicked()) {
+				enterButton.setPrevSt(0);
+			}
+		}
 
-		if (button_up.clicked() && button_up.getPrevSt() == 0) {
-			button_up.setPrevSt(1);
-			main_screen.cursorUp();
-		} else if (button_up.getPrevSt() == 1) {
-			if (button_up.unclicked()) {
-				button_up.setPrevSt(0);
+		if (backButton.clicked() && backButton.getPrevSt() == 0) {
+			backButton.setPrevSt(1);
+			initLcd(i2cSettings);
+			dateScreen.getParent()->displayOneCol(1, 0, 0);
+		} else if (backButton.getPrevSt() == 1) {
+			if (backButton.unclicked()) {
+				backButton.setPrevSt(0);
 			}
 		}
     /* USER CODE END WHILE */
@@ -394,8 +423,10 @@ void HAL_UART_TxCpltCallback(UART_HandleTypeDef *huart) {
 }
 
 void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
-	button_down.interrupt();
-	button_up.interrupt();
+	downButton.interrupt();
+	upButton.interrupt();
+	enterButton.interrupt();
+	backButton.interrupt();
 }
 /* USER CODE END 4 */
 
