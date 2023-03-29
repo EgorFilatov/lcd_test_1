@@ -53,13 +53,12 @@ uint8_t flag;
 
 extern uint8_t i2cLcdState;
 
-Button downButton(GPIOA, 0);
-Button upButton(GPIOA, 10);
-Button enterButton(GPIOA, 4);
-Button backButton(GPIOA, 5);
+Button downButton(GPIOA, 10);
+Button upButton(GPIOA, 4);
+Button enterButton(GPIOA, 5);
+Button backButton(GPIOA, 0);
 
-Screen mainScreen(&hi2c1, &mainScreen, 0x4E);
-Screen dateScreen(&hi2c1, &mainScreen, 0x4E);
+
 
 /* USER CODE END PV */
 
@@ -115,6 +114,9 @@ int main(void)
   I2CSettings i2cSettings { &hi2c1, 0x4E };
   initLcd(i2cSettings);
 
+  Screen mainScreen(&mainScreen, &hi2c1, 0x4E);
+  Screen dateScreen(&mainScreen, &hi2c1, 0x4E);
+
   mainScreen.setLineVal("Время и дата", &dateScreen);
   mainScreen.setLineVal("Сигналы ТС", &mainScreen);
   mainScreen.setLineVal("Сигналы ТУ", &mainScreen);
@@ -129,16 +131,18 @@ int main(void)
   dateScreen.setLineVal("дата 3", &dateScreen);
   dateScreen.setLineVal("дата 4", &dateScreen);
 
-  mainScreen.displayOneCol(1, 0, 0);
+  Screen currentScreen(mainScreen);
+
+  currentScreen.displayOneCol(1, 0, 0);
   /* USER CODE END 2 */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
-  while (1)
-  {
+	while (1) {
+
 		if (downButton.clicked() && downButton.getPrevSt() == 0) {
 			downButton.setPrevSt(1);
-			mainScreen.cursorDown();
+			currentScreen.cursorDown();
 		} else if (downButton.getPrevSt() == 1) {
 			if (downButton.unclicked()) {
 				downButton.setPrevSt(0);
@@ -147,7 +151,7 @@ int main(void)
 
 		if (upButton.clicked() && upButton.getPrevSt() == 0) {
 			upButton.setPrevSt(1);
-			mainScreen.cursorUp();
+			currentScreen.cursorUp();
 		} else if (upButton.getPrevSt() == 1) {
 			if (upButton.unclicked()) {
 				upButton.setPrevSt(0);
@@ -156,8 +160,11 @@ int main(void)
 
 		if (enterButton.clicked() && enterButton.getPrevSt() == 0) {
 			enterButton.setPrevSt(1);
-			initLcd(i2cSettings);
-			mainScreen.selectItem()->displayOneCol(1, 0, 0);
+			clearLcd(i2cSettings);
+			sendLcdInstruction(0b00000100, i2cSettings);
+			HAL_Delay(40);
+			currentScreen.selectItem()->displayOneCol(1, 0, 0);
+			currentScreen = currentScreen.selectItem();
 		} else if (enterButton.getPrevSt() == 1) {
 			if (enterButton.unclicked()) {
 				enterButton.setPrevSt(0);
@@ -166,17 +173,21 @@ int main(void)
 
 		if (backButton.clicked() && backButton.getPrevSt() == 0) {
 			backButton.setPrevSt(1);
-			initLcd(i2cSettings);
-			dateScreen.getParent()->displayOneCol(1, 0, 0);
+			clearLcd(i2cSettings);
+			sendLcdInstruction(0b00000100, i2cSettings);
+			HAL_Delay(40);
+			currentScreen.getParent()->displayOneCol(1, 0, 0);
+			currentScreen = currentScreen.selectItem();
 		} else if (backButton.getPrevSt() == 1) {
 			if (backButton.unclicked()) {
 				backButton.setPrevSt(0);
 			}
 		}
-    /* USER CODE END WHILE */
 
-    /* USER CODE BEGIN 3 */
-  }
+		/* USER CODE END WHILE */
+
+		/* USER CODE BEGIN 3 */
+	}
   /* USER CODE END 3 */
 }
 
@@ -383,7 +394,7 @@ static void MX_GPIO_Init(void)
   /*Configure GPIO pins : PA0 PA10 */
   GPIO_InitStruct.Pin = GPIO_PIN_0|GPIO_PIN_10|GPIO_PIN_4|GPIO_PIN_5;
   GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
-  GPIO_InitStruct.Pull = GPIO_NOPULL;
+  GPIO_InitStruct.Pull = GPIO_PULLDOWN;
   HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
 
   /*Configure GPIO pins : PB12 PB13 PB14 PB15 */

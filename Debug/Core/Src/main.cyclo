@@ -1,0 +1,15 @@
+gthr-default.h:229:1:int __gthread_key_delete(__gthread_key_t)	1
+main.cpp:85:5:int main()	21
+main.cpp:198:6:void SystemClock_Config()	4
+main.cpp:244:13:void MX_I2C1_Init()	4
+main.cpp:292:13:void MX_TIM6_Init()	2
+main.cpp:322:13:void MX_USART2_UART_Init()	2
+main.cpp:355:13:void MX_DMA_Init()	1
+main.cpp:376:13:void MX_GPIO_Init()	1
+main.cpp:424:6:void HAL_I2C_MasterTxCpltCallback(I2C_HandleTypeDef*)	1
+main.cpp:428:6:void HAL_I2C_ErrorCallback(I2C_HandleTypeDef*)	1
+main.cpp:432:6:void HAL_UART_TxCpltCallback(UART_HandleTypeDef*)	1
+main.cpp:436:6:void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef*)	1
+main.cpp:448:6:void Error_Handler()	1
+main.cpp:457:1:void __static_initialization_and_destruction_0(int, int)	3
+main.cpp:457:1:cpp)	1

@@ -1,6 +1,7 @@
 #include "Screen.hpp"
 
-Screen::Screen(I2C_HandleTypeDef *hi2c, Screen *parentScreen, uint8_t i2cAddr) {
+Screen::Screen(Screen *parentScreen,I2C_HandleTypeDef *hi2c, uint8_t i2cAddr) {
+	this->parentScreen = parentScreen;
 	this->i2cSettings.hi2c = hi2c;
 	this->i2cSettings.i2cAddr = i2cAddr;
 }
@@ -12,6 +13,23 @@ Screen::Screen(const Screen &screen) :
 				screen.rowPos2), rowPos3(screen.rowPos3), rowPos4(
 				screen.rowPos4), line(screen.line), linesNum(
 				screen.linesNum), shiftFlag(screen.shiftFlag) {
+}
+
+Screen* Screen::operator = (const Screen *screen) {
+	this->parentScreen = screen->parentScreen;
+	this->i2cSettings = screen->i2cSettings;
+	this->i2cAddr = screen->i2cAddr;
+	this->cursorChar = screen->cursorChar;
+	this->cursorPos = screen->cursorPos;
+	this->rowPos1 = screen->rowPos1;
+	this->rowPos2 = screen->rowPos2;
+	this->rowPos3 = screen->rowPos3;
+	this->rowPos4 = screen->rowPos4;
+	this->line = screen->line;
+	this->linesNum = screen->linesNum;
+	this->shiftFlag = screen->shiftFlag;
+
+	return this;
 }
 
 void Screen::cursorDown() {
@@ -104,8 +122,6 @@ void Screen::setLineVal(std::string value, Screen *childScreen) {
 Screen* Screen::getParent() {
 	return this->parentScreen;
 }
-
-
 
 
 

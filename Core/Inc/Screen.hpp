@@ -49,9 +49,11 @@ private:
 	uint8_t shiftFlag {};
 
 public:
-	Screen(I2C_HandleTypeDef *hi2c, Screen *parentScreen, uint8_t i2cAddr);
+	Screen(Screen *parentScreen, I2C_HandleTypeDef *hi2c, uint8_t i2cAddr);
 
 	Screen(const Screen &screen);
+
+	Screen* operator =(const Screen *screen);
 
 	void cursorDown();
 
