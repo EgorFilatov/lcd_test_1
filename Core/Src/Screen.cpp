@@ -7,12 +7,9 @@ Screen::Screen(Screen *parentScreen,I2C_HandleTypeDef *hi2c, uint8_t i2cAddr) {
 }
 
 Screen::Screen(const Screen &screen) :
-		parentScreen(screen.parentScreen), i2cSettings(screen.i2cSettings), i2cAddr(
-				screen.i2cAddr), cursorChar(screen.cursorChar), cursorPos(
-				screen.cursorPos), rowPos1(screen.rowPos1), rowPos2(
-				screen.rowPos2), rowPos3(screen.rowPos3), rowPos4(
-				screen.rowPos4), line(screen.line), linesNum(
-				screen.linesNum), shiftFlag(screen.shiftFlag) {
+		parentScreen(screen.parentScreen), i2cSettings(screen.i2cSettings), i2cAddr(screen.i2cAddr),
+		cursorChar(screen.cursorChar), cursorPos(screen.cursorPos), rowPos1(screen.rowPos1), rowPos2(screen.rowPos2),
+		rowPos3(screen.rowPos3), rowPos4(screen.rowPos4), line(screen.line), linesNum(screen.linesNum), shiftFlag(screen.shiftFlag) {
 }
 
 Screen* Screen::operator = (const Screen *screen) {
@@ -36,20 +33,20 @@ void Screen::cursorDown() {
 	if (this->cursorPos == this->rowPos1 && this->linesNum > 1) {
 		clearChar(this->cursorPos, this->i2cSettings);
 		this->cursorPos = this->rowPos2;
-		displayOneCol(1, 0, this->shiftFlag);
+		displayOneCol(1, this->shiftFlag);
 	} else if (this->cursorPos == this->rowPos2 && this->linesNum > 2) {
 		clearChar(this->cursorPos, this->i2cSettings);
 		this->cursorPos = this->rowPos3;
-		displayOneCol(1, 0, this->shiftFlag);
+		displayOneCol(1, this->shiftFlag);
 	} else if (this->cursorPos == this->rowPos3 && this->linesNum > 3) {
 		clearChar(this->cursorPos, this->i2cSettings);
 		this->cursorPos = this->rowPos4;
-		displayOneCol(1, 0, this->shiftFlag);
+		displayOneCol(1, this->shiftFlag);
 	} else if (this->cursorPos == this->rowPos4 && this->linesNum > 4) {
 		(this->shiftFlag < (this->linesNum - 4)) ? (++this->shiftFlag) : 0;
 		clearLcd(this->i2cSettings);
 		HAL_Delay(2);
-		displayOneCol(1, 0, this->shiftFlag);
+		displayOneCol(1, this->shiftFlag);
 	}
 }
 
@@ -57,20 +54,20 @@ void Screen::cursorUp() {
 	if (this->cursorPos == this->rowPos4) {
 		clearChar(this->cursorPos, this->i2cSettings);
 		this->cursorPos = this->rowPos3;
-		displayOneCol(1, 0, this->shiftFlag);
+		displayOneCol(1, this->shiftFlag);
 	} else if (this->cursorPos == this->rowPos3) {
 		clearChar(this->cursorPos, this->i2cSettings);
 		this->cursorPos = this->rowPos2;
-		displayOneCol(1, 0, this->shiftFlag);
+		displayOneCol(1, this->shiftFlag);
 	} else if (this->cursorPos == this->rowPos2) {
 		clearChar(this->cursorPos, this->i2cSettings);
 		this->cursorPos = this->rowPos1;
-		displayOneCol(1, 0, this->shiftFlag);
+		displayOneCol(1, this->shiftFlag);
 	} else if (this->cursorPos == this->rowPos1) {
 		(this->shiftFlag > 0) ? (--this->shiftFlag) : 0;
 		clearLcd(this->i2cSettings);
 		HAL_Delay(2);
-		displayOneCol(1, 0, this->shiftFlag);
+		displayOneCol(1, this->shiftFlag);
 	}
 }
 
@@ -91,7 +88,7 @@ Screen* Screen::selectItem() {
 }
 
 
-void Screen::displayOneCol(uint8_t shiftRight, uint8_t shiftDown, int8_t shiftMenu) {
+void Screen::displayOneCol(uint8_t shiftRight, int8_t shiftMenu) {
 
 	sendLcdChar(this->cursorChar, this->cursorPos, this->i2cSettings);
 
@@ -112,6 +109,11 @@ void Screen::displayOneCol(uint8_t shiftRight, uint8_t shiftDown, int8_t shiftMe
 	}
 }
 
+void Screen::displayDate() {
+		sendLcdStr(&(this->line[0].getVal()[0]), this->rowPos2 + 5, this->i2cSettings);
+		sendLcdStr(&(this->line[1].getVal()[0]), this->rowPos3 + 5, this->i2cSettings);
+}
+
 void Screen::setLineVal(std::string value, Screen *childScreen) {
 	this->line.resize(this->line.size() + 1);
 	this->line[this->line.size() - 1].setVal(value);
@@ -119,13 +121,13 @@ void Screen::setLineVal(std::string value, Screen *childScreen) {
 	this->linesNum = this->line.size();
 }
 
+void Screen::resetLineVal(std::string value, uint8_t lineNum) {
+	this->line[lineNum].setVal(value);
+}
+
 Screen* Screen::getParent() {
 	return this->parentScreen;
 }
-
-
-
-
 
 Screen::Line::Line() {
 	this->val = "";

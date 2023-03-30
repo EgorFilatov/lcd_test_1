@@ -4,18 +4,20 @@ stl_vector.h:288:7:std::_Vector_base<_Tp, _Alloc>::_Vector_base() [with _Tp = Sc
 stl_vector.h:487:7:std::vector<_Tp, _Alloc>::vector() [with _Tp = Screen::Line; _Alloc = std::allocator<Screen::Line>]	1
 Screen.cpp:3:1:Screen::Screen(Screen*, I2C_HandleTypeDef*, uint8_t)	1
 Screen.cpp:9:1:Screen::Screen(const Screen&)	1
-Screen.cpp:18:9:Screen* Screen::operator=(const Screen*)	1
-Screen.cpp:35:6:void Screen::cursorDown()	10
-Screen.cpp:56:6:void Screen::cursorUp()	6
-Screen.cpp:77:9:Screen* Screen::selectItem()	5
-Screen.cpp:94:6:void Screen::displayOneCol(uint8_t, uint8_t, int8_t)	5
-Screen.cpp:115:6:void Screen::setLineVal(std::string, Screen*)	1
-Screen.cpp:122:9:Screen* Screen::getParent()	1
-Screen.cpp:130:1:Screen::Line::Line()	1
-Screen.cpp:134:6:void Screen::Line::setVal(std::string)	1
-Screen.cpp:138:6:void Screen::Line::setChild(Screen*)	1
-Screen.cpp:142:9:Screen* Screen::Line::getChild()	1
-Screen.cpp:146:13:std::string Screen::Line::getVal()	1
+Screen.cpp:15:9:Screen* Screen::operator=(const Screen*)	1
+Screen.cpp:32:6:void Screen::cursorDown()	10
+Screen.cpp:53:6:void Screen::cursorUp()	6
+Screen.cpp:74:9:Screen* Screen::selectItem()	5
+Screen.cpp:91:6:void Screen::displayOneCol(uint8_t, int8_t)	5
+Screen.cpp:112:6:void Screen::displayDate()	1
+Screen.cpp:117:6:void Screen::setLineVal(std::string, Screen*)	1
+Screen.cpp:124:6:void Screen::resetLineVal(std::string, uint8_t)	1
+Screen.cpp:128:9:Screen* Screen::getParent()	1
+Screen.cpp:132:1:Screen::Line::Line()	1
+Screen.cpp:136:6:void Screen::Line::setVal(std::string)	1
+Screen.cpp:140:6:void Screen::Line::setChild(Screen*)	1
+Screen.cpp:144:9:Screen* Screen::Line::getChild()	1
+Screen.cpp:148:13:std::string Screen::Line::getVal()	1
 stl_vector.h:131:2:std::_Vector_base<_Tp, _Alloc>::_Vector_impl::_Vector_impl() [with _Tp = Screen::Line; _Alloc = std::allocator<Screen::Line>]	1
 allocator.h:182:7:std::allocator< <template-parameter-1-1> >::~allocator() [with _Tp = Screen::Line]	1
 stl_vector.h:553:7:std::vector<_Tp, _Alloc>::vector(const std::vector<_Tp, _Alloc>&) [with _Tp = Screen::Line; _Alloc = std::allocator<Screen::Line>]	1

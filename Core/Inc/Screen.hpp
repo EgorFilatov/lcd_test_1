@@ -27,7 +27,6 @@ class Screen {
 	};
 
 private:
-
 	Screen *parentScreen;
 
 	I2CSettings i2cSettings;
@@ -63,9 +62,13 @@ public:
 
 	Screen* getParent();
 
-	void displayOneCol(uint8_t shiftRight, uint8_t shiftDown, int8_t shiftMenu);
+	void displayOneCol(uint8_t shiftRight, int8_t shiftMenu);
+
+	void displayDate();
 
 	void setLineVal(std::string value, Screen *childScreen);
+
+	void resetLineVal(std::string value, uint8_t lineNum);
 };
 
 #endif

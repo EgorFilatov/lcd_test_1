@@ -1,5 +1,6 @@
-Core/Src/Screen.o: ../Core/Src/Screen.cpp ../Core/Inc/Screen.hpp \
- ../Core/Inc/main.hpp ../Drivers/STM32F0xx_HAL_Driver/Inc/stm32f0xx_hal.h \
+Drivers/STM32F0xx_HAL_Driver/Src/stm32f0xx_hal_rtc_ex.o: \
+ ../Drivers/STM32F0xx_HAL_Driver/Src/stm32f0xx_hal_rtc_ex.c \
+ ../Drivers/STM32F0xx_HAL_Driver/Inc/stm32f0xx_hal.h \
  ../Core/Inc/stm32f0xx_hal_conf.h \
  ../Drivers/STM32F0xx_HAL_Driver/Inc/stm32f0xx_hal_rcc.h \
  ../Drivers/STM32F0xx_HAL_Driver/Inc/stm32f0xx_hal_def.h \
@@ -29,10 +30,7 @@ Core/Src/Screen.o: ../Core/Src/Screen.cpp ../Core/Inc/Screen.hpp \
  ../Drivers/STM32F0xx_HAL_Driver/Inc/stm32f0xx_hal_tim.h \
  ../Drivers/STM32F0xx_HAL_Driver/Inc/stm32f0xx_hal_tim_ex.h \
  ../Drivers/STM32F0xx_HAL_Driver/Inc/stm32f0xx_hal_uart.h \
- ../Drivers/STM32F0xx_HAL_Driver/Inc/stm32f0xx_hal_uart_ex.h \
- ../Core/Inc/lcd_i2c_lib.hpp
-../Core/Inc/Screen.hpp:
-../Core/Inc/main.hpp:
+ ../Drivers/STM32F0xx_HAL_Driver/Inc/stm32f0xx_hal_uart_ex.h
 ../Drivers/STM32F0xx_HAL_Driver/Inc/stm32f0xx_hal.h:
 ../Core/Inc/stm32f0xx_hal_conf.h:
 ../Drivers/STM32F0xx_HAL_Driver/Inc/stm32f0xx_hal_rcc.h:
@@ -64,4 +62,3 @@ Core/Src/Screen.o: ../Core/Src/Screen.cpp ../Core/Inc/Screen.hpp \
 ../Drivers/STM32F0xx_HAL_Driver/Inc/stm32f0xx_hal_tim_ex.h:
 ../Drivers/STM32F0xx_HAL_Driver/Inc/stm32f0xx_hal_uart.h:
 ../Drivers/STM32F0xx_HAL_Driver/Inc/stm32f0xx_hal_uart_ex.h:
-../Core/Inc/lcd_i2c_lib.hpp:
