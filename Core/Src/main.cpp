@@ -21,6 +21,7 @@
 #include "Screen.hpp"
 #include "Button.hpp"
 #include "lcd_i2c_lib.hpp"
+#include "rtc.hpp"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -51,14 +52,16 @@ DMA_HandleTypeDef hdma_usart2_rx;
 DMA_HandleTypeDef hdma_usart2_tx;
 
 /* USER CODE BEGIN PV */
+Screen dateTimeScreen(&dateTimeScreen);
+Screen mainScreen(&dateTimeScreen);
+Screen tsTyScreen(&mainScreen);
+Screen measurementsScreen(&mainScreen);
+Screen eventScreen(&mainScreen);
+Screen settingsScreen(&mainScreen);
+Screen dateScreen(&mainScreen);
+
 char time[10] { };
 char date[10] { };
-
-
-
-
-
-
 
 uint8_t flag = 0;
 
@@ -68,8 +71,6 @@ Button downButton(GPIOA, 10);
 Button upButton(GPIOA, 4);
 Button enterButton(GPIOA, 5);
 Button backButton(GPIOA, 0);
-
-
 
 /* USER CODE END PV */
 
@@ -87,68 +88,16 @@ static void MX_RTC_Init(void);
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
-void setTime() {
-	RTC_TimeTypeDef sTime = {0};
-	RTC_DateTypeDef sDate = {0};
 
-	/** Initialize RTC and set the Time and Date
-	 */
-	sTime.Hours = 0x16;
-	sTime.Minutes = 0x10;
-	sTime.Seconds = 0x0;
-	sTime.DayLightSaving = RTC_DAYLIGHTSAVING_NONE;
-	sTime.StoreOperation = RTC_STOREOPERATION_RESET;
-	if (HAL_RTC_SetTime(&hrtc, &sTime, RTC_FORMAT_BCD) != HAL_OK) {
-		Error_Handler();
-	}
-	sDate.WeekDay = RTC_WEEKDAY_THURSDAY;
-	sDate.Month = RTC_MONTH_MARCH;
-	sDate.Date = 0x30;
-	sDate.Year = 0x0;
-
-	if (HAL_RTC_SetDate(&hrtc, &sDate, RTC_FORMAT_BCD) != HAL_OK) {
-		Error_Handler();
-	}
-	/* USER CODE BEGIN RTC_Init 2 */
-
-	/* USER CODE END RTC_Init 2 */
-}
-
-void get_time()
-{
- RTC_DateTypeDef gDate;
- RTC_TimeTypeDef gTime;
-/* Get the RTC current Time */
- HAL_RTC_GetTime(&hrtc, &gTime, RTC_FORMAT_BIN);
-/* Get the RTC current Date */
- HAL_RTC_GetDate(&hrtc, &gDate, RTC_FORMAT_BIN);
-/* Display time Format: hh:mm:ss */
- sprintf((char*)time,"%02d:%02d:%02d",gTime.Hours, gTime.Minutes, gTime.Seconds);
-/* Display date Format: dd-mm-yy */
- sprintf((char*)date,"%02d-%02d-%2d",gDate.Date, gDate.Month, 2000 + gDate.Year);
-}
-
-
-
-
-
-
-
-
-
-
+/* Функция прерывания по окончанию передачи по i2c */
 void HAL_I2C_MasterTxCpltCallback(I2C_HandleTypeDef *hi2c) {
 	i2cLcdState = 0;
 }
-
-void HAL_I2C_ErrorCallback(I2C_HandleTypeDef *hi2c) {
-
-}
-
+/* Функция прерывания по окончанию передачи по uart */
 void HAL_UART_TxCpltCallback(UART_HandleTypeDef *huart) {
 
 }
-
+/* Функция прерывания по таймеру */
 void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
 	++flag;
 	downButton.interrupt();
@@ -195,16 +144,10 @@ int main(void)
   I2CSettings i2cSettings { &hi2c1, 0x4E };
   initLcd(i2cSettings);
 
-  Screen dateTimeScreen(&dateTimeScreen, &hi2c1, 0x4E);
-  Screen mainScreen(&dateTimeScreen, &hi2c1, 0x4E);
-  Screen tsTyScreen(&mainScreen, &hi2c1, 0x4E);
-  Screen measurementsScreen(&mainScreen, &hi2c1, 0x4E);
-  Screen eventScreen(&mainScreen, &hi2c1, 0x4E);
-  Screen settingsScreen(&mainScreen, &hi2c1, 0x4E);
-  Screen dateScreen(&mainScreen, &hi2c1, 0x4E);
 
-  dateTimeScreen.setLineVal("13:33", &mainScreen);
-  dateTimeScreen.setLineVal("30.03.2023", &mainScreen);
+
+  dateTimeScreen.setLineVal("00:00", &mainScreen);
+  dateTimeScreen.setLineVal("00-00-0000", &mainScreen);
 
   mainScreen.setLineVal("Сигналы ТС/ТУ", &tsTyScreen);
   mainScreen.setLineVal("Измерения", &measurementsScreen);
@@ -239,44 +182,26 @@ int main(void)
   dateScreen.setLineVal("date2", &tsTyScreen);
 
   Screen* currentScreen = &dateTimeScreen;
-  currentScreen->displayDate();
+  currentScreen->displayDateTime();
 
-  setTime();
+  setDateTime();
   /* USER CODE END 2 */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
 	while (1) {
-		get_time() ;
-		dateTimeScreen.resetLineVal(time, 0);
-		dateTimeScreen.resetLineVal(date, 1);
-		currentScreen->displayDate();
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 		if (currentScreen == &dateTimeScreen) {
+			getDateTime();
+			dateTimeScreen.resetLineVal(time, 0);
+			dateTimeScreen.resetLineVal(date, 1);
+			currentScreen->displayDateTime();
+
 			if (downButton.clicked() && downButton.getPrevSt() == 0) {
 				downButton.setPrevSt(1);
-				clearLcd(i2cSettings);
 				sendLcdInstruction(0b00000100, i2cSettings);
 				HAL_Delay(40);
+				clearLcd(i2cSettings);
+				HAL_Delay(3);
 				currentScreen->selectItem()->displayOneCol(1, 0);
 				currentScreen = currentScreen->selectItem();
 			} else if (downButton.getPrevSt() == 1) {
@@ -287,9 +212,10 @@ int main(void)
 
 			if (upButton.clicked() && upButton.getPrevSt() == 0) {
 				upButton.setPrevSt(1);
-				clearLcd(i2cSettings);
 				sendLcdInstruction(0b00000100, i2cSettings);
 				HAL_Delay(40);
+				clearLcd(i2cSettings);
+				HAL_Delay(3);
 				currentScreen->selectItem()->displayOneCol(1, 0);
 				currentScreen = currentScreen->selectItem();
 			} else if (upButton.getPrevSt() == 1) {
@@ -300,9 +226,10 @@ int main(void)
 
 			if (enterButton.clicked() && enterButton.getPrevSt() == 0) {
 				enterButton.setPrevSt(1);
-				clearLcd(i2cSettings);
 				sendLcdInstruction(0b00000100, i2cSettings);
 				HAL_Delay(40);
+				clearLcd(i2cSettings);
+				HAL_Delay(3);
 				currentScreen->selectItem()->displayOneCol(1, 0);
 				currentScreen = currentScreen->selectItem();
 			} else if (enterButton.getPrevSt() == 1) {
@@ -313,9 +240,10 @@ int main(void)
 
 			if (backButton.clicked() && backButton.getPrevSt() == 0) {
 				backButton.setPrevSt(1);
-				clearLcd(i2cSettings);
 				sendLcdInstruction(0b00000100, i2cSettings);
 				HAL_Delay(40);
+				clearLcd(i2cSettings);
+				HAL_Delay(3);
 				currentScreen->selectItem()->displayOneCol(1, 0);
 				currentScreen = currentScreen->selectItem();
 			} else if (backButton.getPrevSt() == 1) {
@@ -345,11 +273,12 @@ int main(void)
 
 			if (enterButton.clicked() && enterButton.getPrevSt() == 0) {
 				enterButton.setPrevSt(1);
-				clearLcd(i2cSettings);
 				sendLcdInstruction(0b00000100, i2cSettings);
 				HAL_Delay(40);
-				currentScreen->selectItem()->displayOneCol(1, 0);
+				clearLcd(i2cSettings);
+				HAL_Delay(3);
 				currentScreen = currentScreen->selectItem();
+				currentScreen->displayOneCol(1, 0);
 			} else if (enterButton.getPrevSt() == 1) {
 				if (enterButton.unclicked()) {
 					enterButton.setPrevSt(0);
@@ -358,11 +287,17 @@ int main(void)
 
 			if (backButton.clicked() && backButton.getPrevSt() == 0) {
 				backButton.setPrevSt(1);
-				clearLcd(i2cSettings);
 				sendLcdInstruction(0b00000100, i2cSettings);
 				HAL_Delay(40);
-				currentScreen->getParent()->displayOneCol(1, 0);
+				clearLcd(i2cSettings);
+				HAL_Delay(3);
 				currentScreen = currentScreen->getParent();
+				if (currentScreen != &dateTimeScreen) {
+					currentScreen->displayOneCol(1, 0);
+				} else {
+					currentScreen->displayDateTime();
+				}
+
 			} else if (backButton.getPrevSt() == 1) {
 				if (backButton.unclicked()) {
 					backButton.setPrevSt(0);

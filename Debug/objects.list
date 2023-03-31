@@ -2,6 +2,7 @@
 "./Core/Src/Screen.o"
 "./Core/Src/lcd_i2c_lib.o"
 "./Core/Src/main.o"
+"./Core/Src/rtc.o"
 "./Core/Src/stm32f0xx_hal_msp.o"
 "./Core/Src/stm32f0xx_it.o"
 "./Core/Src/syscalls.o"

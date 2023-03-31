@@ -1,5 +1,5 @@
-Core/Src/main.o: ../Core/Src/main.cpp ../Core/Inc/main.hpp \
- ../Drivers/STM32F0xx_HAL_Driver/Inc/stm32f0xx_hal.h \
+Core/Src/rtc.o: ../Core/Src/rtc.cpp ../Core/Inc/rtc.hpp \
+ ../Core/Inc/main.hpp ../Drivers/STM32F0xx_HAL_Driver/Inc/stm32f0xx_hal.h \
  ../Core/Inc/stm32f0xx_hal_conf.h \
  ../Drivers/STM32F0xx_HAL_Driver/Inc/stm32f0xx_hal_rcc.h \
  ../Drivers/STM32F0xx_HAL_Driver/Inc/stm32f0xx_hal_def.h \
@@ -29,9 +29,8 @@ Core/Src/main.o: ../Core/Src/main.cpp ../Core/Inc/main.hpp \
  ../Drivers/STM32F0xx_HAL_Driver/Inc/stm32f0xx_hal_tim.h \
  ../Drivers/STM32F0xx_HAL_Driver/Inc/stm32f0xx_hal_tim_ex.h \
  ../Drivers/STM32F0xx_HAL_Driver/Inc/stm32f0xx_hal_uart.h \
- ../Drivers/STM32F0xx_HAL_Driver/Inc/stm32f0xx_hal_uart_ex.h \
- ../Core/Inc/Screen.hpp ../Core/Inc/main.hpp ../Core/Inc/lcd_i2c_lib.hpp \
- ../Core/Inc/Button.hpp ../Core/Inc/lcd_i2c_lib.hpp ../Core/Inc/rtc.hpp
+ ../Drivers/STM32F0xx_HAL_Driver/Inc/stm32f0xx_hal_uart_ex.h
+../Core/Inc/rtc.hpp:
 ../Core/Inc/main.hpp:
 ../Drivers/STM32F0xx_HAL_Driver/Inc/stm32f0xx_hal.h:
 ../Core/Inc/stm32f0xx_hal_conf.h:
@@ -64,9 +63,3 @@ Core/Src/main.o: ../Core/Src/main.cpp ../Core/Inc/main.hpp \
 ../Drivers/STM32F0xx_HAL_Driver/Inc/stm32f0xx_hal_tim_ex.h:
 ../Drivers/STM32F0xx_HAL_Driver/Inc/stm32f0xx_hal_uart.h:
 ../Drivers/STM32F0xx_HAL_Driver/Inc/stm32f0xx_hal_uart_ex.h:
-../Core/Inc/Screen.hpp:
-../Core/Inc/main.hpp:
-../Core/Inc/lcd_i2c_lib.hpp:
-../Core/Inc/Button.hpp:
-../Core/Inc/lcd_i2c_lib.hpp:
-../Core/Inc/rtc.hpp:

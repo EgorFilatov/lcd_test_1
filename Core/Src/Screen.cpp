@@ -1,6 +1,6 @@
 #include "Screen.hpp"
 
-Screen::Screen(Screen *parentScreen,I2C_HandleTypeDef *hi2c, uint8_t i2cAddr) {
+Screen::Screen(Screen *parentScreen, I2C_HandleTypeDef *hi2c, uint8_t i2cAddr) {
 	this->parentScreen = parentScreen;
 	this->i2cSettings.hi2c = hi2c;
 	this->i2cSettings.i2cAddr = i2cAddr;
@@ -45,7 +45,7 @@ void Screen::cursorDown() {
 	} else if (this->cursorPos == this->rowPos4 && this->linesNum > 4) {
 		(this->shiftFlag < (this->linesNum - 4)) ? (++this->shiftFlag) : 0;
 		clearLcd(this->i2cSettings);
-		HAL_Delay(2);
+		HAL_Delay(3);
 		displayOneCol(1, this->shiftFlag);
 	}
 }
@@ -66,7 +66,7 @@ void Screen::cursorUp() {
 	} else if (this->cursorPos == this->rowPos1) {
 		(this->shiftFlag > 0) ? (--this->shiftFlag) : 0;
 		clearLcd(this->i2cSettings);
-		HAL_Delay(2);
+		HAL_Delay(3);
 		displayOneCol(1, this->shiftFlag);
 	}
 }
@@ -89,7 +89,6 @@ Screen* Screen::selectItem() {
 
 
 void Screen::displayOneCol(uint8_t shiftRight, int8_t shiftMenu) {
-
 	sendLcdChar(this->cursorChar, this->cursorPos, this->i2cSettings);
 
 	if (this->linesNum > 3) {
@@ -109,7 +108,7 @@ void Screen::displayOneCol(uint8_t shiftRight, int8_t shiftMenu) {
 	}
 }
 
-void Screen::displayDate() {
+void Screen::displayDateTime() {
 		sendLcdStr(&(this->line[0].getVal()[0]), this->rowPos2 + 5, this->i2cSettings);
 		sendLcdStr(&(this->line[1].getVal()[0]), this->rowPos3 + 5, this->i2cSettings);
 }

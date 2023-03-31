@@ -48,7 +48,7 @@ private:
 	uint8_t shiftFlag {};
 
 public:
-	Screen(Screen *parentScreen, I2C_HandleTypeDef *hi2c, uint8_t i2cAddr);
+	Screen(Screen *parentScreen, I2C_HandleTypeDef *hi2c = &hi2c1, uint8_t i2cAddr = 0x4E);
 
 	Screen(const Screen &screen);
 
@@ -64,7 +64,7 @@ public:
 
 	void displayOneCol(uint8_t shiftRight, int8_t shiftMenu);
 
-	void displayDate();
+	void displayDateTime();
 
 	void setLineVal(std::string value, Screen *childScreen);
 

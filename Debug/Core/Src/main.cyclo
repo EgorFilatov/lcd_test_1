@@ -1,18 +1,32 @@
 gthr-default.h:229:1:int __gthread_key_delete(__gthread_key_t)	1
-main.cpp:90:6:void setTime()	3
-main.cpp:117:6:void get_time()	1
-main.cpp:140:6:void HAL_I2C_MasterTxCpltCallback(I2C_HandleTypeDef*)	1
-main.cpp:144:6:void HAL_I2C_ErrorCallback(I2C_HandleTypeDef*)	1
-main.cpp:148:6:void HAL_UART_TxCpltCallback(UART_HandleTypeDef*)	1
-main.cpp:152:6:void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef*)	1
-main.cpp:165:5:int main()	42
-main.cpp:383:6:void SystemClock_Config()	4
-main.cpp:431:13:void MX_I2C1_Init()	4
-main.cpp:479:13:void MX_RTC_Init()	2
-main.cpp:517:13:void MX_TIM6_Init()	2
-main.cpp:547:13:void MX_USART2_UART_Init()	2
-main.cpp:580:13:void MX_DMA_Init()	1
-main.cpp:601:13:void MX_GPIO_Init()	1
-main.cpp:656:6:void Error_Handler()	1
-main.cpp:665:1:void __static_initialization_and_destruction_0(int, int)	3
-main.cpp:665:1:cpp)	1
+main.cpp:93:6:void HAL_I2C_MasterTxCpltCallback(I2C_HandleTypeDef*)	1
+main.cpp:97:6:void HAL_UART_TxCpltCallback(UART_HandleTypeDef*)	1
+main.cpp:101:6:void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef*)	1
+main.cpp:114:5:int main()	43
+main.cpp:318:6:void SystemClock_Config()	4
+main.cpp:366:13:void MX_I2C1_Init()	4
+main.cpp:414:13:void MX_RTC_Init()	2
+main.cpp:452:13:void MX_TIM6_Init()	2
+main.cpp:482:13:void MX_USART2_UART_Init()	2
+main.cpp:515:13:void MX_DMA_Init()	1
+main.cpp:536:13:void MX_GPIO_Init()	1
+main.cpp:591:6:void Error_Handler()	1
+Screen.hpp:11:7:Screen::~Screen()	1
+main.cpp:600:1:void __static_initialization_and_destruction_0(int, int)	5
+stl_vector.h:678:7:std::vector<_Tp, _Alloc>::~vector() [with _Tp = Screen::Line; _Alloc = std::allocator<Screen::Line>]	1
+stl_vector.h:128:14:std::_Vector_base<Screen::Line, std::allocator<Screen::Line> >::_Vector_impl::~_Vector_impl()	1
+stl_vector.h:333:7:std::_Vector_base<_Tp, _Alloc>::~_Vector_base() [with _Tp = Screen::Line; _Alloc = std::allocator<Screen::Line>]	1
+stl_vector.h:276:7:std::_Vector_base<_Tp, _Alloc>::_Tp_alloc_type& std::_Vector_base<_Tp, _Alloc>::_M_get_Tp_allocator() [with _Tp = Screen::Line; _Alloc = std::allocator<Screen::Line>]	1
+alloc_traits.h:735:5:void std::_Destroy(_ForwardIterator, _ForwardIterator, std::allocator<_T2>&) [with _ForwardIterator = Screen::Line*; _Tp = Screen::Line]	1
+allocator.h:182:7:std::allocator< <template-parameter-1-1> >::~allocator() [with _Tp = Screen::Line]	1
+stl_vector.h:350:7:void std::_Vector_base<_Tp, _Alloc>::_M_deallocate(std::_Vector_base<_Tp, _Alloc>::pointer, std::size_t) [with _Tp = Screen::Line; _Alloc = std::allocator<Screen::Line>]	2
+stl_construct.h:171:5:void std::_Destroy(_ForwardIterator, _ForwardIterator) [with _ForwardIterator = Screen::Line*]	1
+new_allocator.h:89:7:__gnu_cxx::new_allocator<_Tp>::~new_allocator() [with _Tp = Screen::Line]	1
+alloc_traits.h:491:7:static void std::allocator_traits<std::allocator<_Tp1> >::deallocate(std::allocator_traits<std::allocator<_Tp1> >::allocator_type&, std::allocator_traits<std::allocator<_Tp1> >::pointer, std::allocator_traits<std::allocator<_Tp1> >::size_type) [with _Tp = Screen::Line]	1
+stl_construct.h:149:2:static void std::_Destroy_aux<<anonymous> >::__destroy(_ForwardIterator, _ForwardIterator) [with _ForwardIterator = Screen::Line*; bool <anonymous> = false]	2
+new_allocator.h:126:7:void __gnu_cxx::new_allocator<_Tp>::deallocate(_Tp*, __gnu_cxx::new_allocator<_Tp>::size_type) [with _Tp = Screen::Line]	1
+move.h:49:5:constexpr _Tp* std::__addressof(_Tp&) [with _Tp = Screen::Line]	1
+Screen.hpp:13:8:Screen::Line::~Line()	1
+stl_construct.h:135:5:constexpr void std::_Destroy(_Tp*) [with _Tp = Screen::Line]	1
+main.cpp:600:1:cpp)	1
+main.cpp:600:1:cpp)	1

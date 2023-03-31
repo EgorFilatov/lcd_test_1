@@ -15,7 +15,8 @@ CPP_SRCS += \
 ../Core/Src/Button.cpp \
 ../Core/Src/Screen.cpp \
 ../Core/Src/lcd_i2c_lib.cpp \
-../Core/Src/main.cpp 
+../Core/Src/main.cpp \
+../Core/Src/rtc.cpp 
 
 C_DEPS += \
 ./Core/Src/stm32f0xx_hal_msp.d \
@@ -29,6 +30,7 @@ OBJS += \
 ./Core/Src/Screen.o \
 ./Core/Src/lcd_i2c_lib.o \
 ./Core/Src/main.o \
+./Core/Src/rtc.o \
 ./Core/Src/stm32f0xx_hal_msp.o \
 ./Core/Src/stm32f0xx_it.o \
 ./Core/Src/syscalls.o \
@@ -39,7 +41,8 @@ CPP_DEPS += \
 ./Core/Src/Button.d \
 ./Core/Src/Screen.d \
 ./Core/Src/lcd_i2c_lib.d \
-./Core/Src/main.d 
+./Core/Src/main.d \
+./Core/Src/rtc.d 
 
 
 # Each subdirectory must supply rules for building sources it contributes
@@ -51,7 +54,7 @@ Core/Src/%.o Core/Src/%.su Core/Src/%.cyclo: ../Core/Src/%.c Core/Src/subdir.mk
 clean: clean-Core-2f-Src
 
 clean-Core-2f-Src:
-	-$(RM) ./Core/Src/Button.cyclo ./Core/Src/Button.d ./Core/Src/Button.o ./Core/Src/Button.su ./Core/Src/Screen.cyclo ./Core/Src/Screen.d ./Core/Src/Screen.o ./Core/Src/Screen.su ./Core/Src/lcd_i2c_lib.cyclo ./Core/Src/lcd_i2c_lib.d ./Core/Src/lcd_i2c_lib.o ./Core/Src/lcd_i2c_lib.su ./Core/Src/main.cyclo ./Core/Src/main.d ./Core/Src/main.o ./Core/Src/main.su ./Core/Src/stm32f0xx_hal_msp.cyclo ./Core/Src/stm32f0xx_hal_msp.d ./Core/Src/stm32f0xx_hal_msp.o ./Core/Src/stm32f0xx_hal_msp.su ./Core/Src/stm32f0xx_it.cyclo ./Core/Src/stm32f0xx_it.d ./Core/Src/stm32f0xx_it.o ./Core/Src/stm32f0xx_it.su ./Core/Src/syscalls.cyclo ./Core/Src/syscalls.d ./Core/Src/syscalls.o ./Core/Src/syscalls.su ./Core/Src/sysmem.cyclo ./Core/Src/sysmem.d ./Core/Src/sysmem.o ./Core/Src/sysmem.su ./Core/Src/system_stm32f0xx.cyclo ./Core/Src/system_stm32f0xx.d ./Core/Src/system_stm32f0xx.o ./Core/Src/system_stm32f0xx.su
+	-$(RM) ./Core/Src/Button.cyclo ./Core/Src/Button.d ./Core/Src/Button.o ./Core/Src/Button.su ./Core/Src/Screen.cyclo ./Core/Src/Screen.d ./Core/Src/Screen.o ./Core/Src/Screen.su ./Core/Src/lcd_i2c_lib.cyclo ./Core/Src/lcd_i2c_lib.d ./Core/Src/lcd_i2c_lib.o ./Core/Src/lcd_i2c_lib.su ./Core/Src/main.cyclo ./Core/Src/main.d ./Core/Src/main.o ./Core/Src/main.su ./Core/Src/rtc.cyclo ./Core/Src/rtc.d ./Core/Src/rtc.o ./Core/Src/rtc.su ./Core/Src/stm32f0xx_hal_msp.cyclo ./Core/Src/stm32f0xx_hal_msp.d ./Core/Src/stm32f0xx_hal_msp.o ./Core/Src/stm32f0xx_hal_msp.su ./Core/Src/stm32f0xx_it.cyclo ./Core/Src/stm32f0xx_it.d ./Core/Src/stm32f0xx_it.o ./Core/Src/stm32f0xx_it.su ./Core/Src/syscalls.cyclo ./Core/Src/syscalls.d ./Core/Src/syscalls.o ./Core/Src/syscalls.su ./Core/Src/sysmem.cyclo ./Core/Src/sysmem.d ./Core/Src/sysmem.o ./Core/Src/sysmem.su ./Core/Src/system_stm32f0xx.cyclo ./Core/Src/system_stm32f0xx.d ./Core/Src/system_stm32f0xx.o ./Core/Src/system_stm32f0xx.su
 
 .PHONY: clean-Core-2f-Src
 
