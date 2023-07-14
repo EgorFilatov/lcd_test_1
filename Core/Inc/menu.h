@@ -3,15 +3,16 @@
 
 #include <main.h>
 #include <Screen.h>
+#include <OneColMenuScreen.h>
+#include <TwoColMenuScreen.h>
 
-Screen dateTimeScreen(&dateTimeScreen);
-Screen mainScreen(&dateTimeScreen);
-Screen tsScreen(&mainScreen, 2);
-Screen tyScreen(&mainScreen, 2);
-Screen measurements(&mainScreen);
-Screen eventScreen(&mainScreen);
-Screen settingsScreen(&mainScreen);
-Screen dateScreen(&mainScreen);
+OneColMenuScreen dateTimeScreen(&dateTimeScreen);
+OneColMenuScreen mainScreen(&dateTimeScreen);
+TwoColMenuScreen tsScreen(&mainScreen);
+TwoColMenuScreen tyScreen(&mainScreen);
+OneColMenuScreen measurements(&mainScreen);
+OneColMenuScreen eventScreen(&mainScreen);
+OneColMenuScreen settingsScreen(&mainScreen);
 
 void menuInit() {
 	dateTimeScreen.addLine("00:00", &mainScreen);

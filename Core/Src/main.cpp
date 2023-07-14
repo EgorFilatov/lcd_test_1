@@ -129,8 +129,8 @@ int main(void)
 	while (1) {
 		if (currentScreen == &dateTimeScreen) {
 			getDateTime();
-			dateTimeScreen.resetLineVal(time, 0);
-			dateTimeScreen.resetLineVal(date, 1);
+			dateTimeScreen.resetLine(time, 0);
+			dateTimeScreen.resetLine(date, 1);
 			currentScreen->displayDateTime();
 
 			if (downButton.clicked() || upButton.clicked() || enterButton.clicked() || backButton.clicked()) {
@@ -139,7 +139,7 @@ int main(void)
 				currentScreen->setCursorPos(0);
 				clearLcd(i2cSettings);
 				HAL_Delay(3);
-				currentScreen->show(1, 0);
+				currentScreen->show(0);
 			}
 
 		} else {
@@ -153,13 +153,13 @@ int main(void)
 				currentScreen->setCursorPos(0);
 				clearLcd(i2cSettings);
 				HAL_Delay(3);
-				currentScreen->show(1, 0);
+				currentScreen->show(0);
 			} else if (backButton.clicked()) {
 				currentScreen = currentScreen->getParent();
 				clearLcd(i2cSettings);
 				HAL_Delay(3);
 				if (currentScreen != &dateTimeScreen) {
-					currentScreen->show(1, currentScreen->getShiftFlag());
+					currentScreen->show(currentScreen->getShiftFlag());
 				} else {
 					currentScreen->displayDateTime();
 				}

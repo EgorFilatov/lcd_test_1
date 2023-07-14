@@ -105,38 +105,6 @@ Screen* Screen::selectLine() {
 }
 
 
-void Screen::show(uint8_t shiftRight, int8_t menuShift) {
-	uint8_t a { 0 };
-	uint8_t b { 0 };
-	switch (colNum) {
-	case 1:
-		sendLcdChar(cursorChar, cursorPos, i2cSettings);
-		(linesNum >= 4) ? (a = 4) : (a = linesNum);
-		for (uint8_t i = 0; i < a; i++) {
-			sendLcdStr(&(line[i + menuShift].getVal()[0]), rowPos[i] + shiftRight, i2cSettings);
-		}
-		break;
-	case 2:
-		sendLcdChar(cursorChar, cursorPos, i2cSettings);
-		if (linesNum >= 4) {
-			a = 4;
-			if (linesNum >= 8) {
-				b = 4;
-			} else {
-				b = linesNum - 4;
-			}
-		} else {
-			a = linesNum;
-		}
-		for (uint8_t i = 0; i < a; i++) {
-			sendLcdStr(&(line[i].getVal()[0]), rowPos[i] + shiftRight, i2cSettings);
-		}
-		for (uint8_t i = 0; i < b; i++) {
-			sendLcdStr(&(line[i + 4].getVal()[0]), rowPos[i] + 13, i2cSettings);
-		}
-		break;
-	}
-}
 
 void Screen::displayDateTime() {
 	for (uint8_t i = 0; i <= 1; i++) {
@@ -151,7 +119,7 @@ void Screen::addLine(std::string value, Screen *childScreen) {
 	linesNum = line.size();
 }
 
-void Screen::resetLineVal(std::string value, uint8_t lineNum) {
+void Screen::resetLine(std::string value, uint8_t lineNum) {
 	line[lineNum].setVal(value);
 }
 

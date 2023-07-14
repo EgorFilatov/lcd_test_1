@@ -5,7 +5,6 @@
 #include <main.h>
 #include <vector>
 #include <string>
-#include <OneColMenuScreen.h>
 
 extern I2C_HandleTypeDef hi2c1;
 
@@ -39,18 +38,19 @@ private:
 	uint8_t shiftFlag;
 
 	friend class OneColMenuScreen;
+	friend class TwoColMenuScreen;
 
 public:
 	Screen(Screen *parentScreen);
 	void setI2CSettings(I2C_HandleTypeDef *hi2c, uint8_t i2cAddr);
 	virtual void cursorDown();
 	virtual void cursorUp();
-	virtual void show(int8_t shiftMenu);
+	virtual void show(uint8_t shiftMenu);
 	void setCursorPos(uint8_t position);
 	void setShiftFlag(uint8_t shiftFlag);
 	void displayDateTime();
 	void addLine(std::string value, Screen *childScreen);
-	void resetLineVal(std::string value, uint8_t lineNum);
+	void resetLine(std::string value, uint8_t lineNum);
 	Screen* selectLine();
 	Screen* getParent();
 	uint8_t getShiftFlag();
