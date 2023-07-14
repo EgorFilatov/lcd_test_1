@@ -1,5 +1,5 @@
-Core/Src/main.o: ../Core/Src/main.cpp ../Core/Inc/main.hpp \
- ../Drivers/STM32F0xx_HAL_Driver/Inc/stm32f0xx_hal.h \
+Core/Src/main.o: ../Core/Src/main.cpp ../Core/Inc/Button.h \
+ ../Core/Inc/main.h ../Drivers/STM32F0xx_HAL_Driver/Inc/stm32f0xx_hal.h \
  ../Core/Inc/stm32f0xx_hal_conf.h \
  ../Drivers/STM32F0xx_HAL_Driver/Inc/stm32f0xx_hal_rcc.h \
  ../Drivers/STM32F0xx_HAL_Driver/Inc/stm32f0xx_hal_def.h \
@@ -30,9 +30,12 @@ Core/Src/main.o: ../Core/Src/main.cpp ../Core/Inc/main.hpp \
  ../Drivers/STM32F0xx_HAL_Driver/Inc/stm32f0xx_hal_tim_ex.h \
  ../Drivers/STM32F0xx_HAL_Driver/Inc/stm32f0xx_hal_uart.h \
  ../Drivers/STM32F0xx_HAL_Driver/Inc/stm32f0xx_hal_uart_ex.h \
- ../Core/Inc/Screen.hpp ../Core/Inc/main.hpp ../Core/Inc/lcd_i2c_lib.hpp \
- ../Core/Inc/Button.hpp ../Core/Inc/lcd_i2c_lib.hpp ../Core/Inc/rtc.hpp
-../Core/Inc/main.hpp:
+ ../Core/Inc/timer.h ../Core/Inc/types.h ../Core/Inc/trace.h \
+ ../Core/Inc/lcd_i2c_lib.h ../Core/Inc/rtc.h ../Core/Inc/menu.h \
+ ../Core/Inc/Screen.h ../Core/Inc/OneColMenuScreen.h \
+ ../Core/Inc/TwoColMenuScreen.h
+../Core/Inc/Button.h:
+../Core/Inc/main.h:
 ../Drivers/STM32F0xx_HAL_Driver/Inc/stm32f0xx_hal.h:
 ../Core/Inc/stm32f0xx_hal_conf.h:
 ../Drivers/STM32F0xx_HAL_Driver/Inc/stm32f0xx_hal_rcc.h:
@@ -64,9 +67,12 @@ Core/Src/main.o: ../Core/Src/main.cpp ../Core/Inc/main.hpp \
 ../Drivers/STM32F0xx_HAL_Driver/Inc/stm32f0xx_hal_tim_ex.h:
 ../Drivers/STM32F0xx_HAL_Driver/Inc/stm32f0xx_hal_uart.h:
 ../Drivers/STM32F0xx_HAL_Driver/Inc/stm32f0xx_hal_uart_ex.h:
-../Core/Inc/Screen.hpp:
-../Core/Inc/main.hpp:
-../Core/Inc/lcd_i2c_lib.hpp:
-../Core/Inc/Button.hpp:
-../Core/Inc/lcd_i2c_lib.hpp:
-../Core/Inc/rtc.hpp:
+../Core/Inc/timer.h:
+../Core/Inc/types.h:
+../Core/Inc/trace.h:
+../Core/Inc/lcd_i2c_lib.h:
+../Core/Inc/rtc.h:
+../Core/Inc/menu.h:
+../Core/Inc/Screen.h:
+../Core/Inc/OneColMenuScreen.h:
+../Core/Inc/TwoColMenuScreen.h:

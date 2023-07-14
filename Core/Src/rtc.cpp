@@ -1,4 +1,4 @@
-#include "rtc.hpp"
+#include <rtc.h>
 
 extern RTC_HandleTypeDef hrtc;
 extern char time[10];
