@@ -1,26 +1,14 @@
 /* USER CODE BEGIN Header */
-/**
-  ******************************************************************************
-  * @file           : main.c
-  * @brief          : Main program body
-  ******************************************************************************
-  * @attention
-  *
-  * Copyright (c) 2023 STMicroelectronics.
-  * All rights reserved.
-  *
-  * This software is licensed under terms that can be found in the LICENSE file
-  * in the root directory of this software component.
-  * If no LICENSE file comes with this software, it is provided AS-IS.
-  *
-  ******************************************************************************
-  */
+
 /* USER CODE END Header */
 /* Includes ------------------------------------------------------------------*/
-#include <main.hpp>
-#include "Screen.hpp"
-#include "Button.hpp"
-#include "lcd_i2c_lib.hpp"
+#include <Button.h>
+#include <lcd_i2c_lib.h>
+#include <main.h>
+#include <rtc.h>
+#include <menu.h>
+#include <Screen.h>
+#include <TwoColMenuScreen.h>
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -42,6 +30,8 @@ I2C_HandleTypeDef hi2c1;
 DMA_HandleTypeDef hdma_i2c1_rx;
 DMA_HandleTypeDef hdma_i2c1_tx;
 
+RTC_HandleTypeDef hrtc;
+
 TIM_HandleTypeDef htim6;
 
 UART_HandleTypeDef huart2;
@@ -49,17 +39,17 @@ DMA_HandleTypeDef hdma_usart2_rx;
 DMA_HandleTypeDef hdma_usart2_tx;
 
 /* USER CODE BEGIN PV */
-uint8_t flag;
+char time[10] { };
+char date[10] { };
+
+uint8_t flag = 0;
 
 extern uint8_t i2cLcdState;
 
-Button downButton(GPIOA, 0);
-Button upButton(GPIOA, 10);
-Button enterButton(GPIOA, 4);
-Button backButton(GPIOA, 5);
-
-Screen mainScreen(&hi2c1, &mainScreen, 0x4E);
-Screen dateScreen(&hi2c1, &mainScreen, 0x4E);
+Button downButton(GPIOA, 10, 5);
+Button upButton(GPIOA, 4, 5);
+Button enterButton(GPIOA, 5, 5);
+Button backButton(GPIOA, 0, 5);
 
 /* USER CODE END PV */
 
@@ -70,6 +60,7 @@ static void MX_DMA_Init(void);
 static void MX_I2C1_Init(void);
 static void MX_TIM6_Init(void);
 static void MX_USART2_UART_Init(void);
+static void MX_RTC_Init(void);
 /* USER CODE BEGIN PFP */
 
 /* USER CODE END PFP */
@@ -77,6 +68,14 @@ static void MX_USART2_UART_Init(void);
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
 
+/* Функция прерывания по окончанию передачи по i2c */
+void HAL_I2C_MasterTxCpltCallback(I2C_HandleTypeDef *hi2c) {
+	i2cLcdState = 0;
+}
+/* Функция прерывания по окончанию передачи по uart */
+void HAL_UART_TxCpltCallback(UART_HandleTypeDef *huart) {
+
+}
 /* USER CODE END 0 */
 
 /**
@@ -111,74 +110,67 @@ int main(void)
   MX_I2C1_Init();
   MX_TIM6_Init();
   MX_USART2_UART_Init();
+  MX_RTC_Init();
   /* USER CODE BEGIN 2 */
+  HAL_TIM_Base_Start_IT(&htim6);
+
   I2CSettings i2cSettings { &hi2c1, 0x4E };
-  initLcd(i2cSettings);
+  lcdInit(i2cSettings);
+  menuInit();
 
-  mainScreen.setLineVal("Время и дата", &dateScreen);
-  mainScreen.setLineVal("Сигналы ТС", &mainScreen);
-  mainScreen.setLineVal("Сигналы ТУ", &mainScreen);
-  mainScreen.setLineVal("Сигналы ТИ", &mainScreen);
-  mainScreen.setLineVal("Настройки", &mainScreen);
-  mainScreen.setLineVal("123", &mainScreen);
-  mainScreen.setLineVal("456", &mainScreen);
-  mainScreen.setLineVal("789", &mainScreen);
+  Screen* currentScreen = &dateTimeScreen;
+  setDateTime();
+  currentScreen->displayDateTime();
 
-  dateScreen.setLineVal("дата 1", &dateScreen);
-  dateScreen.setLineVal("дата 2", &dateScreen);
-  dateScreen.setLineVal("дата 3", &dateScreen);
-  dateScreen.setLineVal("дата 4", &dateScreen);
-
-  mainScreen.displayOneCol(1, 0, 0);
   /* USER CODE END 2 */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
-  while (1)
-  {
-		if (downButton.clicked() && downButton.getPrevSt() == 0) {
-			downButton.setPrevSt(1);
-			mainScreen.cursorDown();
-		} else if (downButton.getPrevSt() == 1) {
-			if (downButton.unclicked()) {
-				downButton.setPrevSt(0);
+	while (1) {
+		if (currentScreen == &dateTimeScreen) {
+			getDateTime();
+			dateTimeScreen.resetLineVal(time, 0);
+			dateTimeScreen.resetLineVal(date, 1);
+			currentScreen->displayDateTime();
+
+			if (downButton.clicked() || upButton.clicked() || enterButton.clicked() || backButton.clicked()) {
+				currentScreen = currentScreen->selectLine();
+				currentScreen->setShiftFlag(0);
+				currentScreen->setCursorPos(0);
+				clearLcd(i2cSettings);
+				HAL_Delay(3);
+				currentScreen->show(1, 0);
+			}
+
+		} else {
+			if (downButton.clicked()) {
+				currentScreen->cursorDown();
+			} else if (upButton.clicked()) {
+				currentScreen->cursorUp();
+			} else if (enterButton.clicked()) {
+				currentScreen = currentScreen->selectLine();
+				currentScreen->setShiftFlag(0);
+				currentScreen->setCursorPos(0);
+				clearLcd(i2cSettings);
+				HAL_Delay(3);
+				currentScreen->show(1, 0);
+			} else if (backButton.clicked()) {
+				currentScreen = currentScreen->getParent();
+				clearLcd(i2cSettings);
+				HAL_Delay(3);
+				if (currentScreen != &dateTimeScreen) {
+					currentScreen->show(1, currentScreen->getShiftFlag());
+				} else {
+					currentScreen->displayDateTime();
+				}
 			}
 		}
+		/* USER CODE END WHILE */
 
-		if (upButton.clicked() && upButton.getPrevSt() == 0) {
-			upButton.setPrevSt(1);
-			mainScreen.cursorUp();
-		} else if (upButton.getPrevSt() == 1) {
-			if (upButton.unclicked()) {
-				upButton.setPrevSt(0);
-			}
-		}
-
-		if (enterButton.clicked() && enterButton.getPrevSt() == 0) {
-			enterButton.setPrevSt(1);
-			initLcd(i2cSettings);
-			mainScreen.selectItem()->displayOneCol(1, 0, 0);
-		} else if (enterButton.getPrevSt() == 1) {
-			if (enterButton.unclicked()) {
-				enterButton.setPrevSt(0);
-			}
-		}
-
-		if (backButton.clicked() && backButton.getPrevSt() == 0) {
-			backButton.setPrevSt(1);
-			initLcd(i2cSettings);
-			dateScreen.getParent()->displayOneCol(1, 0, 0);
-		} else if (backButton.getPrevSt() == 1) {
-			if (backButton.unclicked()) {
-				backButton.setPrevSt(0);
-			}
-		}
-    /* USER CODE END WHILE */
-
-    /* USER CODE BEGIN 3 */
-  }
-  /* USER CODE END 3 */
-}
+		/* USER CODE BEGIN 3 */
+	}
+	/* USER CODE END 3 */
+	}
 
 /**
   * @brief System Clock Configuration
@@ -193,9 +185,10 @@ void SystemClock_Config(void)
   /** Initializes the RCC Oscillators according to the specified parameters
   * in the RCC_OscInitTypeDef structure.
   */
-  RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_HSI;
+  RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_HSI|RCC_OSCILLATORTYPE_LSI;
   RCC_OscInitStruct.HSIState = RCC_HSI_ON;
   RCC_OscInitStruct.HSICalibrationValue = RCC_HSICALIBRATION_DEFAULT;
+  RCC_OscInitStruct.LSIState = RCC_LSI_ON;
   RCC_OscInitStruct.PLL.PLLState = RCC_PLL_ON;
   RCC_OscInitStruct.PLL.PLLSource = RCC_PLLSOURCE_HSI;
   RCC_OscInitStruct.PLL.PLLMUL = RCC_PLL_MUL12;
@@ -217,8 +210,9 @@ void SystemClock_Config(void)
   {
     Error_Handler();
   }
-  PeriphClkInit.PeriphClockSelection = RCC_PERIPHCLK_I2C1;
+  PeriphClkInit.PeriphClockSelection = RCC_PERIPHCLK_I2C1|RCC_PERIPHCLK_RTC;
   PeriphClkInit.I2c1ClockSelection = RCC_I2C1CLKSOURCE_HSI;
+  PeriphClkInit.RTCClockSelection = RCC_RTCCLKSOURCE_LSI;
   if (HAL_RCCEx_PeriphCLKConfig(&PeriphClkInit) != HAL_OK)
   {
     Error_Handler();
@@ -270,6 +264,69 @@ static void MX_I2C1_Init(void)
   /* USER CODE BEGIN I2C1_Init 2 */
 
   /* USER CODE END I2C1_Init 2 */
+
+}
+
+/**
+  * @brief RTC Initialization Function
+  * @param None
+  * @retval None
+  */
+static void MX_RTC_Init(void)
+{
+
+  /* USER CODE BEGIN RTC_Init 0 */
+
+  /* USER CODE END RTC_Init 0 */
+
+  RTC_TimeTypeDef sTime = {0};
+  RTC_DateTypeDef sDate = {0};
+
+  /* USER CODE BEGIN RTC_Init 1 */
+
+  /* USER CODE END RTC_Init 1 */
+
+  /** Initialize RTC Only
+  */
+  hrtc.Instance = RTC;
+  hrtc.Init.HourFormat = RTC_HOURFORMAT_24;
+  hrtc.Init.AsynchPrediv = 127;
+  hrtc.Init.SynchPrediv = 311;
+  hrtc.Init.OutPut = RTC_OUTPUT_DISABLE;
+  hrtc.Init.OutPutPolarity = RTC_OUTPUT_POLARITY_HIGH;
+  hrtc.Init.OutPutType = RTC_OUTPUT_TYPE_OPENDRAIN;
+  if (HAL_RTC_Init(&hrtc) != HAL_OK)
+  {
+    Error_Handler();
+  }
+
+  /* USER CODE BEGIN Check_RTC_BKUP */
+
+  /* USER CODE END Check_RTC_BKUP */
+
+  /** Initialize RTC and set the Time and Date
+  */
+  sTime.Hours = 0x16;
+  sTime.Minutes = 0x10;
+  sTime.Seconds = 0x0;
+  sTime.DayLightSaving = RTC_DAYLIGHTSAVING_NONE;
+  sTime.StoreOperation = RTC_STOREOPERATION_RESET;
+  if (HAL_RTC_SetTime(&hrtc, &sTime, RTC_FORMAT_BCD) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  sDate.WeekDay = RTC_WEEKDAY_THURSDAY;
+  sDate.Month = RTC_MONTH_MARCH;
+  sDate.Date = 0x30;
+  sDate.Year = 0x23;
+
+  if (HAL_RTC_SetDate(&hrtc, &sDate, RTC_FORMAT_BCD) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  /* USER CODE BEGIN RTC_Init 2 */
+
+  /* USER CODE END RTC_Init 2 */
 
 }
 
@@ -365,6 +422,8 @@ static void MX_DMA_Init(void)
 static void MX_GPIO_Init(void)
 {
   GPIO_InitTypeDef GPIO_InitStruct = {0};
+/* USER CODE BEGIN MX_GPIO_Init_1 */
+/* USER CODE END MX_GPIO_Init_1 */
 
   /* GPIO Ports Clock Enable */
   __HAL_RCC_GPIOA_CLK_ENABLE();
@@ -380,10 +439,10 @@ static void MX_GPIO_Init(void)
   /*Configure GPIO pin Output Level */
   HAL_GPIO_WritePin(GPIOA, GPIO_PIN_8|GPIO_PIN_9|GPIO_PIN_11|GPIO_PIN_12, GPIO_PIN_RESET);
 
-  /*Configure GPIO pins : PA0 PA10 */
-  GPIO_InitStruct.Pin = GPIO_PIN_0|GPIO_PIN_10|GPIO_PIN_4|GPIO_PIN_5;
+  /*Configure GPIO pins : PA0 PA4 PA5 PA10 */
+  GPIO_InitStruct.Pin = GPIO_PIN_0|GPIO_PIN_4|GPIO_PIN_5|GPIO_PIN_10;
   GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
-  GPIO_InitStruct.Pull = GPIO_NOPULL;
+  GPIO_InitStruct.Pull = GPIO_PULLDOWN;
   HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
 
   /*Configure GPIO pins : PB12 PB13 PB14 PB15 */
@@ -407,27 +466,12 @@ static void MX_GPIO_Init(void)
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
   HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
 
+/* USER CODE BEGIN MX_GPIO_Init_2 */
+/* USER CODE END MX_GPIO_Init_2 */
 }
 
 /* USER CODE BEGIN 4 */
-void HAL_I2C_MasterTxCpltCallback(I2C_HandleTypeDef *hi2c) {
-	i2cLcdState = 0;
-}
 
-void HAL_I2C_ErrorCallback(I2C_HandleTypeDef *hi2c) {
-
-}
-
-void HAL_UART_TxCpltCallback(UART_HandleTypeDef *huart) {
-
-}
-
-void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
-	downButton.interrupt();
-	upButton.interrupt();
-	enterButton.interrupt();
-	backButton.interrupt();
-}
 /* USER CODE END 4 */
 
 /**

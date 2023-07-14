@@ -1,7 +1,8 @@
-#include "main.hpp"
+#ifndef INC_LCD_I2C_LIB_H_
+#define INC_LCD_I2C_LIB_H_
 
-#ifndef INC_LCD_I2C_LIB_HPP_
-#define INC_LCD_I2C_LIB_HPP_
+#include <main.h>
+#include <unordered_map>
 
 #define EN  0b00000100 // Пин EN
 #define LED 0b00001000 // Пин включения светодиодной подсветки
@@ -52,6 +53,6 @@ void setDdramAddr(uint8_t ddramAddr, I2CSettings settings);
 
 
 /* Фунуция инициализации дисплея */
-void initLcd(I2CSettings settings);
+void lcdInit(I2CSettings settings);
 
 #endif

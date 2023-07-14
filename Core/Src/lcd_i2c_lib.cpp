@@ -1,135 +1,205 @@
-#include "lcd_i2c_lib.hpp"
+#include <lcd_i2c_lib.h>
 
 uint8_t i2cLcdState { };
 
-char *recodeCyr(char *charCyr) {
-	if (*charCyr == 'А') {
+char* recodeCyr(char *charCyr) {
+	switch (*charCyr) {
+	case 'А':
 		*charCyr = 'A';
-	} else if (*charCyr == 'а') {
+		break;
+	case 'а':
 		*charCyr = 'a';
-	} else if (*charCyr == 'Б') {
+		break;
+	case 'Б':
 		*charCyr = 0b10100000;
-	} else if (*charCyr == 'б') {
+		break;
+	case 'б':
 		*charCyr = 0b10110010;
-	} else if (*charCyr == 'В') {
+		break;
+	case 'В':
 		*charCyr = 'B';
-	} else if (*charCyr == 'в') {
+		break;
+	case 'в':
 		*charCyr = 0b10110011;
-	} else if (*charCyr == 'Г') {
+		break;
+	case 'Г':
 		*charCyr = 0b10100001;
-	} else if (*charCyr == 'г') {
+		break;
+	case 'г':
 		*charCyr = 0b10110100;
-	} else if (*charCyr == 'Д') {
+		break;
+	case 'Д':
 		*charCyr = 0b11100000;
-	} else if (*charCyr == 'д') {
+		break;
+	case 'д':
 		*charCyr = 0b11100011;
-	} else if (*charCyr == 'Е') {
+		break;
+	case 'Е':
 		*charCyr = 'E';
-	} else if (*charCyr == 'е') {
+		break;
+	case 'е':
 		*charCyr = 'e';
-	} else if (*charCyr == 'Ж') {
+		break;
+	case 'Ё':
+		*charCyr = 0b10100010;
+		break;
+	case 'ё':
+		*charCyr = 0b10110101;
+		break;
+	case 'Ж':
 		*charCyr = 0b10100011;
-	} else if (*charCyr == 'ж') {
+		break;
+	case 'ж':
 		*charCyr = 0b10110110;
-	} else if (*charCyr == 'З') {
+		break;
+	case 'З':
 		*charCyr = 0b10100100;
-	} else if (*charCyr == 'з') {
+		break;
+	case 'з':
 		*charCyr = 0b10110111;
-	} else if (*charCyr == 'И') {
+		break;
+	case 'И':
 		*charCyr = 0b10100101;
-	} else if (*charCyr == 'и') {
+		break;
+	case 'и':
 		*charCyr = 0b10111000;
-	} else if (*charCyr == 'Й') {
+		break;
+	case 'Й':
 		*charCyr = 0b10100110;
-	} else if (*charCyr == 'й') {
+		break;
+	case 'й':
 		*charCyr = 0b10111001;
-	} else if (*charCyr == 'К') {
+		break;
+	case 'К':
 		*charCyr = 'K';
-	} else if (*charCyr == 'к') {
+		break;
+	case 'к':
 		*charCyr = 0b10111010;
-	} else if (*charCyr == 'Л') {
+		break;
+	case 'Л':
 		*charCyr = 0b10100111;
-	} else if (*charCyr == 'л') {
+		break;
+	case 'л':
 		*charCyr = 0b10111011;
-	} else if (*charCyr == 'М') {
+		break;
+	case 'М':
 		*charCyr = 'M';
-	} else if (*charCyr == 'м') {
+		break;
+	case 'м':
 		*charCyr = 0b10111100;
-	} else if (*charCyr == 'Н') {
+		break;
+	case 'Н':
 		*charCyr = 'H';
-	} else if (*charCyr == 'н') {
+		break;
+	case 'н':
 		*charCyr = 0b10111101;
-	} else if (*charCyr == 'О') {
+		break;
+	case 'О':
 		*charCyr = 'O';
-	} else if (*charCyr == 'о') {
+		break;
+	case 'о':
 		*charCyr = 'o';
-	} else if (*charCyr == 'П') {
+		break;
+	case 'П':
 		*charCyr = 0b10101000;
-	} else if (*charCyr == 'п') {
+		break;
+	case 'п':
 		*charCyr = 0b10111110;
-	} else if (*charCyr == 'Р') {
+		break;
+	case 'Р':
 		*charCyr = 'P';
-	} else if (*charCyr == 'р') {
+		break;
+	case 'р':
 		*charCyr = 'p';
-	} else if (*charCyr == 'С') {
+		break;
+	case 'С':
 		*charCyr = 'C';
-	} else if (*charCyr == 'с') {
+		break;
+	case 'с':
 		*charCyr = 'c';
-	} else if (*charCyr == 'Т') {
+		break;
+	case 'Т':
 		*charCyr = 'T';
-	} else if (*charCyr == 'т') {
+		break;
+	case 'т':
 		*charCyr = 0b10111111;
-	} else if (*charCyr == 'У') {
+		break;
+	case 'У':
 		*charCyr = 0b10101001;
-	} else if (*charCyr == 'у') {
+		break;
+	case 'у':
 		*charCyr = 'y';
-	} else if (*charCyr == 'Ф') {
+		break;
+	case 'Ф':
 		*charCyr = 0b10101010;
-	} else if (*charCyr == 'ф') {
+		break;
+	case 'ф':
 		*charCyr = 0b11100100;
-	} else if (*charCyr == 'Х') {
+		break;
+	case 'Х':
 		*charCyr = 'X';
-	} else if (*charCyr == 'х') {
+		break;
+	case 'х':
 		*charCyr = 'x';
-	} else if (*charCyr == 'Ц') {
+		break;
+	case 'Ц':
 		*charCyr = 0b11100001;
-	} else if (*charCyr == 'ц') {
+		break;
+	case 'ц':
 		*charCyr = 0b11100101;
-	} else if (*charCyr == 'Ч') {
+		break;
+	case 'Ч':
 		*charCyr = 0b10101011;
-	} else if (*charCyr == 'ч') {
+		break;
+	case 'ч':
 		*charCyr = 0b11000000;
-	} else if (*charCyr == 'Ш') {
+		break;
+	case 'Ш':
 		*charCyr = 0b10101100;
-	} else if (*charCyr == 'ш') {
+		break;
+	case 'ш':
 		*charCyr = 0b11000001;
-	} else if (*charCyr == 'Щ') {
+		break;
+	case 'Щ':
 		*charCyr = 0b11100010;
-	} else if (*charCyr == 'щ') {
+		break;
+	case 'щ':
 		*charCyr = 0b11100110;
-	} else if (*charCyr == 'ъ') {
+		break;
+	case 'ъ':
 		*charCyr = 0b11000010;
-	} else if (*charCyr == 'ы') {
+		break;
+	case 'Ы':
+		*charCyr = 0b10101110;
+		break;
+	case 'ы':
 		*charCyr = 0b11000011;
-	} else if (*charCyr == 'ь') {
+		break;
+	case 'ь':
 		*charCyr = 0b11000100;
-	} else if (*charCyr == 'Э') {
+		break;
+	case 'Э':
 		*charCyr = 0b10101111;
-	} else if (*charCyr == 'э') {
+		break;
+	case 'э':
 		*charCyr = 0b11000101;
-	} else if (*charCyr == 'Ю') {
+		break;
+	case 'Ю':
 		*charCyr = 0b10110000;
-	} else if (*charCyr == 'ю') {
+		break;
+	case 'ю':
 		*charCyr = 0b11000110;
-	} else if (*charCyr == 'Я') {
+		break;
+	case 'Я':
 		*charCyr = 0b10110001;
-	} else if (*charCyr == 'я') {
+		break;
+	case 'я':
 		*charCyr = 0b11000111;
+		break;
 	}
 
 	return charCyr;
 }
-
 
 /*
 void i2c_addr_scan(I2C_HandleTypeDef *hi2c) {
@@ -248,7 +318,7 @@ void setDdramAddr(uint8_t ddramAddr, I2CSettings settings) {
 	}
 }
 
-void initLcd(I2CSettings settings) {
+void lcdInit(I2CSettings settings) {
 	HAL_Delay(50);
 
 	sendLcdInstruction(0b00110000, settings);   // 8ми битный интерфейс
