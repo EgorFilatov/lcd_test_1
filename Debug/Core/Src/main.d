@@ -33,7 +33,8 @@ Core/Src/main.o: ../Core/Src/main.cpp ../Core/Inc/Button.h \
  ../Core/Inc/timer.h ../Core/Inc/types.h ../Core/Inc/trace.h \
  ../Core/Inc/lcd_i2c_lib.h ../Core/Inc/rtc.h ../Core/Inc/menu.h \
  ../Core/Inc/Screen.h ../Core/Inc/OneColMenuScreen.h \
- ../Core/Inc/TwoColMenuScreen.h ../Core/Inc/DateTimeScreen.h
+ ../Core/Inc/TwoColMenuScreen.h ../Core/Inc/DateTimeScreen.h \
+ ../Core/Inc/FourColScreen.h
 ../Core/Inc/Button.h:
 ../Core/Inc/main.h:
 ../Drivers/STM32F0xx_HAL_Driver/Inc/stm32f0xx_hal.h:
@@ -77,3 +78,4 @@ Core/Src/main.o: ../Core/Src/main.cpp ../Core/Inc/Button.h \
 ../Core/Inc/OneColMenuScreen.h:
 ../Core/Inc/TwoColMenuScreen.h:
 ../Core/Inc/DateTimeScreen.h:
+../Core/Inc/FourColScreen.h:

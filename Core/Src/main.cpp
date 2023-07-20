@@ -11,6 +11,7 @@
 #include <OneColMenuScreen.h>
 #include <TwoColMenuScreen.h>
 #include <DateTimeScreen.h>
+#include <FourColScreen.h>
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -177,12 +178,14 @@ int main(void)
 			} else if (upButton.clicked()) {
 				currentScreen->cursorUp();
 			} else if (enterButton.clicked()) {
-				currentScreen = currentScreen->selectLine();
-				currentScreen->setMenuShift(0);
-				currentScreen->setCursorPos(0);
-				clearLcd(i2cSettings);
-				HAL_Delay(3);
-				currentScreen->show(0);
+				if (currentScreen != &portStateScreen) {
+					currentScreen = currentScreen->selectLine();
+					currentScreen->setMenuShift(0);
+					currentScreen->setCursorPos(0);
+					clearLcd(i2cSettings);
+					HAL_Delay(3);
+					currentScreen->show(0);
+				}
 			} else if (backButton.clicked()) {
 				currentScreen = currentScreen->getParent();
 				clearLcd(i2cSettings);

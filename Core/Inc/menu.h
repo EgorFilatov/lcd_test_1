@@ -6,9 +6,11 @@
 #include <OneColMenuScreen.h>
 #include <TwoColMenuScreen.h>
 #include <DateTimeScreen.h>
+#include <FourColScreen.h>
 
 DateTimeScreen dateTimeScreen(&dateTimeScreen);
 OneColMenuScreen mainScreen(&dateTimeScreen);
+FourColScreen portStateScreen(&mainScreen);
 TwoColMenuScreen tsScreen(&mainScreen);
 TwoColMenuScreen tyScreen(&mainScreen);
 OneColMenuScreen measurements(&mainScreen);
@@ -19,6 +21,31 @@ void menuInit() {
 	dateTimeScreen.addLine("00:00", &mainScreen);
 	dateTimeScreen.addLine("00-00-0000", &mainScreen);
 
+	portStateScreen.addLine("1.", &portStateScreen);
+	portStateScreen.addLine("2.", &portStateScreen);
+	portStateScreen.addLine("3.", &portStateScreen);
+	portStateScreen.addLine("4.", &portStateScreen);
+	portStateScreen.addLine("5.", &portStateScreen);
+	portStateScreen.addLine("6.", &portStateScreen);
+	portStateScreen.addLine("7.", &portStateScreen);
+	portStateScreen.addLine("8.", &portStateScreen);
+	portStateScreen.addLine("9.", &portStateScreen);
+	portStateScreen.addLine("10.", &portStateScreen);
+	portStateScreen.addLine("11.", &portStateScreen);
+	portStateScreen.addLine("12.", &portStateScreen);
+	portStateScreen.addLine("13.", &portStateScreen);
+	portStateScreen.addLine("14.", &portStateScreen);
+	portStateScreen.addLine("15.", &portStateScreen);
+	portStateScreen.addLine("16.", &portStateScreen);
+	portStateScreen.addLine("17.", &portStateScreen);
+	portStateScreen.addLine("18.", &portStateScreen);
+	portStateScreen.addLine("19.", &portStateScreen);
+	portStateScreen.addLine("20.", &portStateScreen);
+	portStateScreen.addLine("21.", &portStateScreen);
+	portStateScreen.addLine("22.", &portStateScreen);
+
+
+	mainScreen.addLine("Состояние портов", &portStateScreen);
 	mainScreen.addLine("Сигналы ТС", &tsScreen);
 	mainScreen.addLine("Сигналы ТУ", &tyScreen);
 	mainScreen.addLine("Измерения", &measurements);
