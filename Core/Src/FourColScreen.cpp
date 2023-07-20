@@ -1,17 +1,28 @@
-#include <TwoColMenuScreen.h>
+#include <FourColScreen.h>
 
-TwoColMenuScreen::TwoColMenuScreen(Screen *parentScreen) :
+FourColScreen::FourColScreen(Screen *parentScreen) :
 		Screen(parentScreen) {
 }
 
-void TwoColMenuScreen::show(int8_t shiftVal) {
+void FourColScreen::show(int8_t shiftVal) {
 	uint8_t a { 0 };
 	uint8_t b { 0 };
-	sendLcdChar(cursorChar, cursorPos, i2cSettings);
+	uint8_t c { 0 };
+	uint8_t d { 0 };
 	if (linesNum >= 4) {
 		a = 4;
 		if (linesNum >= 8) {
 			b = 4;
+			if (linesNum >= 12) {
+				c = 12;
+				if (linesNum >= 8) {
+					d = 4;
+				} else {
+					d = linesNum - 4;
+				}
+			} else {
+				c = linesNum - 4;
+			}
 		} else {
 			b = linesNum - 4;
 		}
@@ -24,10 +35,15 @@ void TwoColMenuScreen::show(int8_t shiftVal) {
 	for (uint8_t i = 0; i < b; i++) {
 		sendLcdStr(&(line[i + shiftVal + 4].getValue()[0]), Screen::rowPos[i] + 11, i2cSettings);
 	}
-
+	for (uint8_t i = 0; i < c; i++) {
+		sendLcdStr(&(line[i + shiftVal + 8].getValue()[0]), Screen::rowPos[i] + 11, i2cSettings);
+	}
+	for (uint8_t i = 0; i < d; i++) {
+		sendLcdStr(&(line[i + shiftVal + 12].getValue()[0]), Screen::rowPos[i] + 11, i2cSettings);
+	}
 }
 
-void TwoColMenuScreen::cursorDown() {
+void FourColScreen::cursorDown() {
 	if (cursorPos == rowPos[0] || cursorPos == rowPos[1] || cursorPos == rowPos[2]) {
 		for (uint8_t i = 0; i <= 2; i++) {
 			if (cursorPos == rowPos[i] && linesNum > (i + 1)) {
@@ -58,7 +74,7 @@ void TwoColMenuScreen::cursorDown() {
 	show(menuShift);
 }
 
-void TwoColMenuScreen::cursorUp() {
+void FourColScreen::cursorUp() {
 	if (cursorPos == rowPos[1] || cursorPos == rowPos[2] || cursorPos == rowPos[3]) {
 		for (uint8_t i = 1; i <= 3; i++) {
 			if (cursorPos == rowPos[i]) {
@@ -88,16 +104,3 @@ void TwoColMenuScreen::cursorUp() {
 	HAL_Delay(3);
 	show(menuShift);
 }
-
-Screen* TwoColMenuScreen::selectLine() {
-	for (uint8_t i = 0; i < 4; i++) {
-		if (cursorPos == rowPos[i]) {
-			return line[i + menuShift].getChild();
-		}
-		if (cursorPos == rowPos[i] + 10) {
-			return line[i + 4 + menuShift].getChild();
-		}
-	}
-	return 0;
-}
-

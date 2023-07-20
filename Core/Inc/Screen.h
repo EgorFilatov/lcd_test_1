@@ -32,9 +32,10 @@ private:
 	uint8_t linesNum {};
 	int8_t menuShift;
 
+	friend class DateTimeScreen;
 	friend class OneColMenuScreen;
 	friend class TwoColMenuScreen;
-	friend class DateTimeScreen;
+	friend class FourColScreen;
 
 public:
 	Screen(Screen *parentScreen);

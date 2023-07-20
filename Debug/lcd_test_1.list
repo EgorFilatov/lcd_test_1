@@ -496,7 +496,7 @@ uint8_t Button::unpressed() {
  80003d6:	bd80      	pop	{r7, pc}
 
 080003d8 <_ZN6Screen10cursorDownEv>:
-	friend class DateTimeScreen;
+	friend class FourColScreen;
 
 public:
 	Screen(Screen *parentScreen);
@@ -3515,7 +3515,7 @@ void TwoColMenuScreen::show(int8_t shiftVal) {
  8001718:	2200      	movs	r2, #0
  800171a:	701a      	strb	r2, [r3, #0]
  800171c:	e02e      	b.n	800177c <_ZN16TwoColMenuScreen4showEa+0x144>
-		sendLcdStr(&(line[i +  + shiftVal + 4].getValue()[0]), Screen::rowPos[i] + 11, i2cSettings);
+		sendLcdStr(&(line[i + shiftVal + 4].getValue()[0]), Screen::rowPos[i] + 11, i2cSettings);
  800171e:	687b      	ldr	r3, [r7, #4]
  8001720:	3310      	adds	r3, #16
  8001722:	0018      	movs	r0, r3
