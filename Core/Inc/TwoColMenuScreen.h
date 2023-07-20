@@ -6,9 +6,10 @@
 class TwoColMenuScreen : public Screen {
 public:
 	TwoColMenuScreen(Screen *parentScreen);
-	void show(int8_t shiftMenu);
-	void cursorDown();
-	void cursorUp();
+	void show(int8_t shiftVal) override;
+	void cursorDown() override;
+	void cursorUp() override;
+	virtual Screen* selectLine() override;
 };
 
 #endif /* INC_TWOCOLMENUSCREEN_H_ */

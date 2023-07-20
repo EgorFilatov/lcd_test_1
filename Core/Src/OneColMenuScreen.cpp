@@ -3,12 +3,12 @@
 OneColMenuScreen::OneColMenuScreen(Screen *parentScreen) : Screen(parentScreen) {
 }
 
-void OneColMenuScreen::show(int8_t shiftMenu) {
+void OneColMenuScreen::show(int8_t shiftVal) {
 	sendLcdChar(cursorChar, cursorPos, i2cSettings);
 	uint8_t a;
 	(linesNum >= 4) ? (a = 4) : (a = linesNum);
 	for (uint8_t i = 0; i < a; i++) {
-		sendLcdStr(&(line[i + shiftMenu].getVal()[0]), Screen::rowPos[i] + 1, i2cSettings);
+		sendLcdStr(&(line[i + shiftVal].getValue()[0]), Screen::rowPos[i] + 1, i2cSettings);
 	}
 }
 
@@ -22,13 +22,13 @@ void OneColMenuScreen::cursorDown() {
 			}
 		}
 	} else {
-		if (shiftFlag < (linesNum - 4)) {
-			++shiftFlag;
+		if (menuShift < (linesNum - 4)) {
+			++menuShift;
 			clearLcd(i2cSettings);
 		}
 	}
 	HAL_Delay(3);
-	show(shiftFlag);
+	show(menuShift);
 }
 
 void OneColMenuScreen::cursorUp() {
@@ -41,12 +41,12 @@ void OneColMenuScreen::cursorUp() {
 			}
 		}
 	} else {
-		if (shiftFlag > 0) {
-			--shiftFlag;
+		if (menuShift > 0) {
+			--menuShift;
 			clearLcd(i2cSettings);
 		}
 	}
 	HAL_Delay(3);
-	show(shiftFlag);
+	show(menuShift);
 }
 

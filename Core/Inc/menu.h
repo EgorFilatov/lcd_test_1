@@ -5,8 +5,9 @@
 #include <Screen.h>
 #include <OneColMenuScreen.h>
 #include <TwoColMenuScreen.h>
+#include <DateTimeScreen.h>
 
-OneColMenuScreen dateTimeScreen(&dateTimeScreen);
+DateTimeScreen dateTimeScreen(&dateTimeScreen);
 OneColMenuScreen mainScreen(&dateTimeScreen);
 TwoColMenuScreen tsScreen(&mainScreen);
 TwoColMenuScreen tyScreen(&mainScreen);

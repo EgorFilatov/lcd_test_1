@@ -8,7 +8,9 @@
 #include <rtc.h>
 #include <menu.h>
 #include <Screen.h>
+#include <OneColMenuScreen.h>
 #include <TwoColMenuScreen.h>
+#include <DateTimeScreen.h>
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -39,12 +41,39 @@ DMA_HandleTypeDef hdma_usart2_rx;
 DMA_HandleTypeDef hdma_usart2_tx;
 
 /* USER CODE BEGIN PV */
+uint8_t uartRx[55] = {0x55,0xAA,  // Контрольные байты (0x55,0xAA)
+					  	   50,         // Размер массива
+						   0xF8,0xF8,  // Тех. состояние(0-есть плата, 1-нет платы)
+						   7,15,  // Порт 1
+						   7,15,
+						   7,15,  // Порт 2
+						   7,15,
+						   7,15,  // Порт 3
+						   7,15,
+						   7,15,  // Порт 4
+						   7,15,
+						   7,15,  // Порт 5
+						   7,15,
+						   7,15,  // Порт 6
+						   7,15,
+						   7,15,  // Порт 7
+						   7,15,
+						   7,15,  // Порт 8
+						   7,15,
+						   7,15,  // Порт 9
+					  	   7,15,
+						   7,15,  // Порт 10
+						   7,15,
+						   7,15,  // Порт 11
+					  	   7,15,
+						   7,15,  // Порт 12
+						   7,15,
+						   7,15}; // Контрольная сумма
+
 char time[10] { };
 char date[10] { };
 
 uint8_t flag = 0;
-
-extern uint8_t i2cLcdState;
 
 Button downButton(GPIOA, 10, 5);
 Button upButton(GPIOA, 4, 5);
@@ -70,7 +99,7 @@ static void MX_RTC_Init(void);
 
 /* Функция прерывания по окончанию передачи по i2c */
 void HAL_I2C_MasterTxCpltCallback(I2C_HandleTypeDef *hi2c) {
-	i2cLcdState = 0;
+
 }
 /* Функция прерывания по окончанию передачи по uart */
 void HAL_UART_TxCpltCallback(UART_HandleTypeDef *huart) {
@@ -120,7 +149,7 @@ int main(void)
 
   Screen* currentScreen = &dateTimeScreen;
   setDateTime();
-  currentScreen->displayDateTime();
+  currentScreen->show(0);
 
   /* USER CODE END 2 */
 
@@ -129,13 +158,13 @@ int main(void)
 	while (1) {
 		if (currentScreen == &dateTimeScreen) {
 			getDateTime();
-			dateTimeScreen.resetLine(time, 0);
-			dateTimeScreen.resetLine(date, 1);
-			currentScreen->displayDateTime();
+			dateTimeScreen.resetLine(0, time);
+			dateTimeScreen.resetLine(1, date);
+			currentScreen->show(0);
 
 			if (downButton.clicked() || upButton.clicked() || enterButton.clicked() || backButton.clicked()) {
 				currentScreen = currentScreen->selectLine();
-				currentScreen->setShiftFlag(0);
+				currentScreen->setMenuShift(0);
 				currentScreen->setCursorPos(0);
 				clearLcd(i2cSettings);
 				HAL_Delay(3);
@@ -149,7 +178,7 @@ int main(void)
 				currentScreen->cursorUp();
 			} else if (enterButton.clicked()) {
 				currentScreen = currentScreen->selectLine();
-				currentScreen->setShiftFlag(0);
+				currentScreen->setMenuShift(0);
 				currentScreen->setCursorPos(0);
 				clearLcd(i2cSettings);
 				HAL_Delay(3);
@@ -159,9 +188,9 @@ int main(void)
 				clearLcd(i2cSettings);
 				HAL_Delay(3);
 				if (currentScreen != &dateTimeScreen) {
-					currentScreen->show(currentScreen->getShiftFlag());
+					currentScreen->show(currentScreen->getMenuShift());
 				} else {
-					currentScreen->displayDateTime();
+					currentScreen->show(0);
 				}
 			}
 		}

@@ -2,7 +2,6 @@
 #define INC_LCD_I2C_LIB_H_
 
 #include <main.h>
-#include <unordered_map>
 
 #define EN  0b00000100 // Пин EN
 #define LED 0b00001000 // Пин включения светодиодной подсветки

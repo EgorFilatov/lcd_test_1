@@ -12,17 +12,13 @@ class Screen {
 
 	class Line {
 	private:
-		std::string val;
+		std::string value;
 		Screen *childScreen;
 	public:
 		Line();
-
-		void setVal(std::string val);
-
-		std::string getVal();
-
+		void setValue(std::string val);
 		void setChild(Screen *childScreen);
-
+		std::string getValue();
 		Screen* getChild();
 	};
 
@@ -34,26 +30,26 @@ private:
 	uint8_t rowPos[4];
 	std::vector<Line> line;
 	uint8_t linesNum {};
-	//uint8_t menuShift;
-	uint8_t shiftFlag;
+	int8_t menuShift;
 
 	friend class OneColMenuScreen;
 	friend class TwoColMenuScreen;
+	friend class DateTimeScreen;
 
 public:
 	Screen(Screen *parentScreen);
 	void setI2CSettings(I2C_HandleTypeDef *hi2c, uint8_t i2cAddr);
-	virtual void cursorDown();
-	virtual void cursorUp();
-	virtual void show(uint8_t shiftMenu);
+	virtual void cursorDown() {}
+	virtual void cursorUp() {}
+	virtual void show(int8_t shiftVal) {}
+	virtual Screen* selectLine();
 	void setCursorPos(uint8_t position);
-	void setShiftFlag(uint8_t shiftFlag);
+	void setMenuShift(uint8_t shiftVal);
 	void displayDateTime();
 	void addLine(std::string value, Screen *childScreen);
-	void resetLine(std::string value, uint8_t lineNum);
-	Screen* selectLine();
+	void resetLine(uint8_t lineNum, std::string value);
 	Screen* getParent();
-	uint8_t getShiftFlag();
+	uint8_t getMenuShift();
 };
 
 #endif

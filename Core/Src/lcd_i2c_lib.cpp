@@ -1,7 +1,5 @@
 #include <lcd_i2c_lib.h>
 
-uint8_t i2cLcdState { };
-
 char* recodeCyr(char *charCyr) {
 	switch (*charCyr) {
 	case 'À':
@@ -224,9 +222,8 @@ void sendLcdInstruction(uint8_t instruction, I2CSettings settings) {
 	ByteArr[2] = lowerBite | LED | EN;
 	ByteArr[3] = 0;
 
-	i2cLcdState = 1;
 	HAL_I2C_Master_Transmit_DMA(settings.hi2c, settings.i2cAddr, ByteArr, 4);
-	while (i2cLcdState == 1) {
+	while (settings.hi2c->State == HAL_I2C_STATE_BUSY_TX)  {
 	}
 }
 
@@ -244,9 +241,8 @@ void sendLcdChar(uint8_t character, uint8_t ddramAddr, I2CSettings settings) {
 	ByteArr[2] = lowerBite | 1 | LED | EN;
 	ByteArr[3] = 0;
 
-	i2cLcdState = 1;
 	HAL_I2C_Master_Transmit_DMA(settings.hi2c, settings.i2cAddr, ByteArr, 4);
-	while (i2cLcdState == 1) {
+	while (settings.hi2c->State == HAL_I2C_STATE_BUSY_TX)  {
 	}
 }
 
@@ -261,9 +257,8 @@ void sendLcdByte(uint8_t character, I2CSettings settings) {
 	ByteArr[2] = lowerBite | 1 | LED | EN;
 	ByteArr[3] = 0;
 
-	i2cLcdState = 1;
 	HAL_I2C_Master_Transmit_DMA(settings.hi2c, settings.i2cAddr, ByteArr, 4);
-	while (i2cLcdState == 1) {
+	while (settings.hi2c->State == HAL_I2C_STATE_BUSY_TX)  {
 	}
 }
 
@@ -291,9 +286,8 @@ void sendLcdStrAB(char *string, uint8_t a, uint8_t b, uint8_t ddramAddr, I2CSett
 void clearLcd(I2CSettings settings) {
 	uint8_t ByteArr[4] { 4, 0, 20, 0 };
 
-	i2cLcdState = 1;
 	HAL_I2C_Master_Transmit_DMA(settings.hi2c, settings.i2cAddr, ByteArr, 4);
-	while (i2cLcdState == 1) {
+	while (settings.hi2c->State == HAL_I2C_STATE_BUSY_TX) {
 	}
 }
 
@@ -312,9 +306,8 @@ void setDdramAddr(uint8_t ddramAddr, I2CSettings settings) {
 	ByteArr[2] = lowerBite | EN;
 	ByteArr[3] = 0;
 
-	i2cLcdState = 1;
 	HAL_I2C_Master_Transmit_DMA(settings.hi2c, settings.i2cAddr, ByteArr, 4);
-	while (i2cLcdState == 1) {
+	while (settings.hi2c->State == HAL_I2C_STATE_BUSY_TX) {
 	}
 }
 
